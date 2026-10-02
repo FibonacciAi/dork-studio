@@ -43,6 +43,12 @@ class LocalBoundaryTests(unittest.TestCase):
         self.assertEqual(self.client.get('/api/settings', headers={'Origin': 'null'}).status_code, 403)
         self.assertEqual(self.client.post('/api/settings', json={}, headers={'Origin': 'http://localhost'}).status_code, 200)
 
+    def test_x_search_uses_only_generic_provider_tool(self):
+        self.assertEqual(dashboard.build_xai_tools(['x_search'], ['fixture-collection']),
+                         [{'type': 'x_search'}])
+        self.assertEqual(dashboard.build_xai_tools(['post_tweet', 'x_oauth',
+                         {'type': 'x_search', 'allowed_x_handles': ['fixture-account']}]), [])
+
     def test_filename_traversal_rejected(self):
         for filename in ['../settings/settings.json', '/tmp/victim', '..\\victim']:
             self.assertEqual(self.client.post('/api/image/delete', json={'filename': filename}).status_code, 400)

@@ -431,10 +431,6 @@ html, body {
     background: rgba(45, 212, 191, 0.1);
 }
 
-.director-chip.adult-chip.active {
-    border-color: rgba(251, 113, 133, 0.5);
-    background: rgba(251, 113, 133, 0.12);
-}
 
 .director-action-stack {
     display: grid;
@@ -2667,9 +2663,6 @@ textarea::placeholder, input::placeholder { color: var(--text-dim); }
     padding: 5px 2px 2px;
 }
 
-.style-preset-section.adult {
-    color: var(--accent-3);
-}
 
 .style-preset {
     position: relative;

@@ -14,6 +14,8 @@ import urllib.request
 import urllib.error
 import urllib.parse
 import subprocess
+import tempfile
+from fractions import Fraction
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from dotenv import dotenv_values, load_dotenv
@@ -1833,37 +1835,31 @@ def api_video_lastframe():
     if not video_path.exists():
         return jsonify({"error": "Video not found"}), 404
 
-    ts = int(time.time() * 1000)
-    frame_filename = f"frame_{ts}.png"
+    frame_filename = f"frame_{uuid.uuid4().hex}.png"
     frame_path = IMAGES_DIR / frame_filename
 
     try:
-        result = subprocess.run(
-            ["ffmpeg", "-y", "-sseof", "-0.1", "-i", str(video_path),
-             "-update", "1", "-frames:v", "1", str(frame_path)],
-            capture_output=True, text=True, timeout=30
-        )
-        if result.returncode != 0 or not frame_path.exists():
-            result = subprocess.run(
-                ["ffprobe", "-v", "error", "-show_entries", "format=duration",
-                 "-of", "default=noprint_wrappers=1:nokey=1", str(video_path)],
-                capture_output=True, text=True, timeout=10
-            )
-            duration = float(result.stdout.strip()) - 0.05
-            subprocess.run(
-                ["ffmpeg", "-y", "-ss", str(max(0, duration)), "-i", str(video_path),
-                 "-frames:v", "1", str(frame_path)],
-                capture_output=True, text=True, timeout=30
-            )
-
-        if not frame_path.exists():
-            return jsonify({"error": "Failed to extract frame"}), 500
+        # Count decoded frames instead of guessing a seek near the container end.
+        # The latter can select an earlier frame, especially with VFR or long audio.
+        probe = subprocess.run(
+            ["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_frames",
+             "-show_entries", "stream=nb_read_frames", "-of", "json", str(video_path)],
+            capture_output=True, text=True, timeout=120, check=True)
+        frames = int(json.loads(probe.stdout)["streams"][0]["nb_read_frames"])
+        if frames < 1:
+            raise ValueError("Video contains no decoded frames")
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-y", "-i", str(video_path), "-map", "0:v:0",
+             "-vf", f"select=eq(n\\,{frames - 1})", "-fps_mode", "passthrough",
+             "-frames:v", "1", str(frame_path)],
+            capture_output=True, text=True, timeout=120, check=True)
 
         frame_b64 = base64.b64encode(frame_path.read_bytes()).decode()
         return jsonify({
             "filename": frame_filename,
             "url": f"/images/{frame_filename}",
             "base64": frame_b64,
+            "decoded_frame_index": frames - 1,
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -1891,47 +1887,82 @@ def api_video_list():
 
 @app.route("/api/video/stitch", methods=["POST"])
 def api_video_stitch():
-    """Stitch multiple videos together via ffmpeg."""
-    data = request.json
+    """Normalize decoded clips onto one video/audio timeline, then join them."""
+    data = request.get_json(silent=True) or {}
     filenames = data.get("videos", [])
-    if len(filenames) < 2:
-        return jsonify({"error": "Need at least 2 videos"}), 400
+    if not isinstance(filenames, list) or not 2 <= len(filenames) <= 30:
+        return jsonify({"error": "Choose 2 to 30 videos"}), 400
 
     paths = []
     for name in filenames:
+        if not isinstance(name, str) or Path(name).name != name or "/" in name or "\\" in name:
+            return jsonify({"error": "A local video filename is required"}), 400
         p = VIDEOS_DIR / Path(name).name
         if not p.exists():
             return jsonify({"error": f"Not found: {name}"}), 404
-        paths.append(str(p))
+        paths.append(p)
 
     stitch_id = str(uuid.uuid4())[:8]
     output_filename = f"stitch_{stitch_id}.mp4"
     output_path = VIDEOS_DIR / output_filename
 
     try:
-        concat_path = VIDEOS_DIR / f".concat_{stitch_id}.txt"
-        concat_path.write_text("\n".join(f"file '{p}'" for p in paths))
-
-        result = subprocess.run(
-            ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(concat_path), "-c", "copy", str(output_path)],
-            capture_output=True, text=True, timeout=60
-        )
-        concat_path.unlink(missing_ok=True)
-
-        if result.returncode != 0:
-            # Retry with re-encoding
-            concat_path.write_text("\n".join(f"file '{p}'" for p in paths))
-            result = subprocess.run(
-                ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(concat_path),
-                 "-c:v", "libx264", "-crf", "23", "-preset", "fast", "-c:a", "aac", str(output_path)],
-                capture_output=True, text=True, timeout=120
-            )
-            concat_path.unlink(missing_ok=True)
-            if result.returncode != 0:
-                return jsonify({"error": f"ffmpeg failed: {result.stderr[:200]}"}), 500
-
-        return jsonify({"filename": output_filename, "url": f"/videos/{output_filename}"})
+        clips = []
+        for path in paths:
+            probe = subprocess.run(
+                ["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(path)],
+                capture_output=True, text=True, timeout=30, check=True)
+            metadata = json.loads(probe.stdout)
+            video = next(stream for stream in metadata["streams"] if stream["codec_type"] == "video")
+            duration = float(video.get("duration") or metadata["format"]["duration"])
+            if not 0 < duration <= 3600:
+                raise ValueError("Video duration must be between 0 and 3600 seconds")
+            clips.append({"video": video, "duration": duration,
+                          "audio": any(s["codec_type"] == "audio" for s in metadata["streams"])})
+        first = clips[0]["video"]
+        try:
+            rate = Fraction(first.get("avg_frame_rate") or first["r_frame_rate"])
+            if not 1 <= rate <= 60: rate = Fraction(30)
+        except (ValueError, ZeroDivisionError):
+            rate = Fraction(30)
+        fps = f"{rate.numerator}/{rate.denominator}"
+        width, height = int(first["width"]), int(first["height"])
+        width += width % 2; height += height % 2
+        filters, command, total_frames = [], ["ffmpeg", "-v", "error", "-y"], 0
+        for path in paths: command += ["-i", str(path)]
+        for i, clip in enumerate(clips):
+            frames = max(1, round(clip["duration"] * float(rate)))
+            duration = frames / float(rate)
+            total_frames += frames
+            filters.append(
+                f"[{i}:v:0]setpts=PTS-STARTPTS,scale={width}:{height}:force_original_aspect_ratio=decrease,"
+                f"pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps={fps}:start_time=0,"
+                f"tpad=stop_mode=clone:stop_duration=1,trim=end_frame={frames},"
+                f"setpts=N/({fps}*TB),format=yuv420p[v{i}]")
+            audio = (f"[{i}:a:0]asetpts=PTS-STARTPTS,aresample=48000:async=1:first_pts=0,"
+                     "aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo"
+                     if clip["audio"] else "anullsrc=r=48000:cl=stereo")
+            # Five milliseconds at each edge prevents waveform clicks without
+            # overlapping frames or adding a dissolve that ghosts the subjects.
+            filters.append(f"{audio},apad,atrim=duration={duration:.9f},"
+                           f"afade=t=in:d=0.005,afade=t=out:st={max(0, duration - .005):.9f}:d=0.005[a{i}]")
+        inputs = "".join(f"[v{i}][a{i}]" for i in range(len(clips)))
+        filters.append(f"{inputs}concat=n={len(clips)}:v=1:a=1[v][a]")
+        # Keep long graph text out of the command-line length limit.
+        with tempfile.TemporaryDirectory(prefix="dork-stitch-", dir=VIDEOS_DIR) as temporary:
+            graph = Path(temporary) / "filters.txt"
+            graph.write_text(";\n".join(filters))
+            command += ["-filter_complex_script", str(graph), "-map", "[v]", "-map", "[a]",
+                        "-c:v", "libx264", "-crf", "18", "-preset", "fast", "-pix_fmt", "yuv420p",
+                        "-r", fps, "-fps_mode", "cfr", "-video_track_timescale", "90000",
+                        "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
+                        "-movflags", "+faststart", str(output_path)]
+            subprocess.run(command, capture_output=True, text=True, timeout=600, check=True)
+        return jsonify({"filename": output_filename, "url": f"/videos/{output_filename}",
+                        "frame_rate": fps, "frames": total_frames,
+                        "transition": "normalized cut", "audio_edge_fade_ms": 5})
     except Exception as e:
+        output_path.unlink(missing_ok=True)
         return jsonify({"error": str(e)}), 500
 
 

@@ -8,6 +8,7 @@
     <title>dork</title>
     <link rel="stylesheet" href="/static/css/styles.css?v={{ cache_bust }}">
     <link rel="stylesheet" href="/static/css/sketch.css?v={{ cache_bust }}">
+    <link rel="stylesheet" href="/static/css/premium.css?v={{ cache_bust }}">
 </head>
 <body>
 
@@ -130,7 +131,7 @@
             </div>
             <div class="tool-strip" id="chat-tool-strip">
                 <button class="tool-chip" data-tool="web_search" title="Use xAI Web Search">Web</button>
-                <button class="tool-chip" data-tool="x_search" title="Use xAI X Search">X</button>
+                <button class="tool-chip" data-tool="x_search" title="Search public X posts with xAI">X Search</button>
                 <button class="tool-chip" data-tool="code_execution" title="Use xAI Code Execution">Code</button>
                 <button class="tool-chip" data-tool="collections_search" title="Use xAI Collections Search">Files</button>
                 <span id="early-access-status" class="tool-chip-status">Live xAI models load automatically.</span>
@@ -309,7 +310,7 @@
                             <label>Vision</label>
                             <button id="director-clear" class="mini-action" type="button">Clear</button>
                         </div>
-                        <textarea id="director-vision" class="director-vision-input" placeholder="a phrase, a fetish focus, a product idea, a character, a whole story..."></textarea>
+                        <textarea id="director-vision" class="director-vision-input" placeholder="a phrase, a product idea, a character, a whole story..."></textarea>
                     </div>
                     <div class="director-block director-source-block">
                         <div class="field-header">
@@ -318,9 +319,12 @@
                             <button id="director-source-clear" class="mini-action" type="button">Clear</button>
                         </div>
                         <div id="director-source-preview" class="director-source-preview"></div>
-                        <div id="director-drop" class="drop-zone director-drop">
-                            <p>Drop image or click to upload</p>
-                            <div class="hint">Attach locally, then choose Infer From Image for paid creative direction</div>
+                        <div id="director-drop" class="drop-zone image-upload-target director-drop" tabindex="0" role="group" aria-label="Director source image upload">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>
+                            <p class="upload-title">Add a source image</p>
+                            <div class="upload-description">Attach a reference for your direction</div>
+                            <button type="button" class="upload-choose">Choose image</button>
+                            <div class="upload-formats">or drop PNG, JPG or WebP here</div>
                         </div>
                         <input type="file" id="director-file" accept="image/png,image/jpeg,image/webp" style="display:none">
                         <div class="director-source-actions">
@@ -350,7 +354,7 @@
                     </div>
                     <div class="field-group">
                         <label>Interest Areas</label>
-                        <input id="director-interests" class="voice-persona-input" placeholder="fashion, horror, latex, feet, products, cyberpunk, hotel rooms...">
+                        <input id="director-interests" class="voice-persona-input" placeholder="fashion, horror, products, cyberpunk, travel, architecture...">
                     </div>
                     <div class="field-group">
                         <label>Style</label>
@@ -362,7 +366,6 @@
                         <button type="button" class="director-chip" data-chip="velvet brutalism">Velvet brutal</button>
                         <button type="button" class="director-chip" data-chip="candy horror">Candy horror</button>
                         <button type="button" class="director-chip" data-chip="ritual gold">Ritual gold</button>
-                        <button type="button" class="director-chip adult-chip" data-chip="latex, restraint, socks, feet, footwear, bathroom mirror selfie">Adult kink</button>
                     </div>
                     <div class="director-action-stack">
                         <button id="director-build" class="btn btn-primary btn-full">Build Prompt</button>
@@ -413,7 +416,6 @@
                     </div>
                     <div class="director-side-panel">
                         <div class="director-side-title">Context</div>
-                        <div class="director-context-row"><span>Adult styles</span><strong id="director-adult-status">Off</strong></div>
                         <div class="director-context-row"><span>Image model</span><strong id="director-image-model-label">-</strong></div>
                         <div class="director-context-row"><span>Aspect</span><strong id="director-aspect-label">-</strong></div>
                         <div class="director-context-row"><span>Active cast</span><strong id="director-cast-label">0</strong></div>
@@ -520,9 +522,12 @@
                         <div id="imagine-source-preview"></div>
                         <button id="imagine-suggest-directions" class="btn btn-sm btn-ghost" type="button">Suggest directions</button>
                         <p class="hint">AI direction pitches are provider-billed. Attach a source first, then choose whether to request them.</p>
-                        <div id="imagine-drop" class="drop-zone">
-                            <p>Drop image or click to upload</p>
-                            <div class="hint">For image-to-image editing</div>
+                        <div id="imagine-drop" class="drop-zone image-upload-target" tabindex="0" role="group" aria-label="Imagine source image upload">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>
+                            <p class="upload-title">Add a source image</p>
+                            <div class="upload-description">Start an image edit from a reference</div>
+                            <button type="button" class="upload-choose">Choose image</button>
+                            <div class="upload-formats">or drop PNG, JPG or WebP here</div>
                         </div>
                         <input type="file" id="imagine-file" accept="image/png,image/jpeg,image/webp" style="display:none">
                     </div>
@@ -580,11 +585,14 @@
                         <div id="video-source-preview"></div>
                         <button id="video-suggest-directions" class="btn btn-sm btn-ghost" type="button">Suggest directions</button>
                         <p class="hint">AI direction pitches are provider-billed. Selecting a pitch stages it for your review.</p>
-                        <div id="video-drop" class="drop-zone">
-                            <p>Drop image or click to upload</p>
-                            <div class="hint">For image-to-video</div>
+                        <div id="video-drop" class="drop-zone image-upload-target" tabindex="0" role="group" aria-label="Video source image upload">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>
+                            <p class="upload-title">Add a source image</p>
+                            <div class="upload-description">Use a finished still as the opening frame</div>
+                            <button type="button" class="upload-choose">Choose image</button>
+                            <div class="upload-formats">or drop PNG, JPG or WebP here</div>
                         </div>
-                        <input type="file" id="video-file" accept="image/*" style="display:none">
+                        <input type="file" id="video-file" accept="image/png,image/jpeg,image/webp" style="display:none">
                     </div>
                     <div class="field-group">
                         <label>Or pick from gallery</label>
@@ -787,7 +795,7 @@
             <div class="tool-strip" id="code-tool-strip">
                 <button class="tool-chip active" data-tool="code_execution" title="Use xAI Code Execution">Code</button>
                 <button class="tool-chip" data-tool="web_search" title="Use xAI Web Search">Web</button>
-                <button class="tool-chip" data-tool="x_search" title="Use xAI X Search">X</button>
+                <button class="tool-chip" data-tool="x_search" title="Search public X posts with xAI">X Search</button>
                 <button class="tool-chip" data-tool="collections_search" title="Use xAI Collections Search">Files</button>
             </div>
             <div class="code-layout">
@@ -912,15 +920,6 @@
                 </div>
                 <div class="divider"></div>
                 <div class="settings-section" style="margin-top:20px">
-                    <div class="settings-title">Adult Image Styles</div>
-                    <label class="settings-toggle">
-                        <input type="checkbox" id="adult-styles-toggle">
-                        <span>Enable adult style presets</span>
-                    </label>
-                    <div class="settings-subtitle">Adds adult-only fetish, latex, restraint, feet/socks, footwear, bathroom/selfie, club, and boudoir presets to Chat and Imagine.</div>
-                </div>
-                <div class="divider"></div>
-                <div class="settings-section" style="margin-top:20px">
                     <div class="settings-title">Models</div>
                     <div id="model-discovery-note" style="margin-top:8px;font-size:11px;color:var(--text-dim)">Loading model registry...</div>
                     <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:12.5px;color:var(--text-secondary)">
@@ -1016,7 +1015,7 @@
         <footer class="live-voice-controls">
             <div class="live-voice-tools" aria-label="Live Voice tools">
                 <button type="button" data-voice-tool="web_search" onclick="toggleChatVoiceTool('web_search')">Web</button>
-                <button type="button" data-voice-tool="x_search" onclick="toggleChatVoiceTool('x_search')">X</button>
+                <button type="button" data-voice-tool="x_search" onclick="toggleChatVoiceTool('x_search')" title="Search public X posts with xAI">X Search</button>
                 <button type="button" data-voice-tool="code_execution" onclick="toggleChatVoiceTool('code_execution')">Code</button>
                 <button type="button" onclick="document.getElementById('chat-voice-image-input').click()">Exact image</button>
                 <input id="chat-voice-image-input" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="shareChatVoiceImage(event)">

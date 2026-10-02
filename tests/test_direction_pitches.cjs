@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const source = fs.readFileSync(require.resolve('../app/static/js/direction-pitches.js'), 'utf8');
 const image = 'data:image/png;base64,synthetic-selected-image';
 function fixture() {
-    const requests = [], staged = [], panels = [], overlays = [], elements = new Map();
+    const requests = [], staged = [], panels = [], overlays = [], toasts = [], elements = new Map();
     let ready;
     function element() {
         const handlers = new Map(), children = [], selectors = new Map();
@@ -28,16 +28,20 @@ function fixture() {
         document: {
             addEventListener(type, fn) { ready = fn; }, getElementById: get,
             createElement: element, querySelector(selector) { return selector === '.prompt-suggest-overlay' ? overlays.at(-1) : { src: image }; },
+            querySelectorAll() { return []; },
             body: { appendChild(overlay) { overlays.push(overlay); } },
         },
         state: { imagineImages: [{ url: '/images/selected.png', prompt: 'The source direction' }], imagineSource: 'synthetic-selected-image', imagineSourceUrl: image, videoSource: 'synthetic-selected-image', videoSourceUrl: 'stale-image-url', directorDraft: { image_prompt: 'Directed still', video_prompt: 'Directed motion' }, videoFromFreeze: true, videoNarrative: ['one', 'two', 'three', 'four', 'five', 'six'], chatMessages: ['private history'], chatVoiceMemories: ['private memory'] },
         assetLibActiveChars: () => [{ name: 'Selected Cast', data: 'must-not-copy-private-asset' }],
         assetLibActiveStyles: () => [{ name: 'Selected Look' }],
         assetLibDataUrlForSource: raw => `data:image/png;base64,${raw}`,
-        DEFAULT_CHAT_MODEL: 'test-chat-model', escapeAttr: value => String(value).replaceAll('"', '&quot;'), toast() {}, savePersistence() {},
+        DEFAULT_CHAT_MODEL: 'test-chat-model', escapeAttr: value => String(value).replaceAll('"', '&quot;'), toast(...args) { toasts.push(args); }, savePersistence() {},
         async fetchAsDataUrl(url) { return image; },
         async loadImageAsEditSource(url) { staged.push({ mode: 'edit', url }); },
-        async loadImageAsVideoSource(url) { staged.push({ mode: 'video', url }); },
+        async loadImageAsVideoSource(url) {
+            staged.push({ mode: 'video', url }); context.state.videoSource = url.split(',')[1];
+            context.state.videoContinuationSource = null; context.state.videoFromFreeze = false;
+        },
         switchPanel(panel) { panels.push(panel); },
         DorkMedia: { guides: new Map(), refreshEstimates() {} },
         async fetch(url, options) { requests.push({ url, body: JSON.parse(options.body) }); return { ok: true, async json() { return { content: '["Subtle direction","Bold direction","Unexpected direction"]' }; } }; },
@@ -45,7 +49,7 @@ function fixture() {
         generateVideo() { throw new Error('Opening or selecting directions must not render'); },
     };
     context.window = context; vm.createContext(context); vm.runInContext(source, context); ready();
-    return { context, get, requests, staged, panels, overlays };
+    return { context, get, requests, staged, panels, overlays, toasts };
 }
 const click = target => target.handlers.get('click')({ target });
 
@@ -124,4 +128,75 @@ test('unsupported providers and missing sources do not call a provider', async (
     const f = fixture(); await assert.rejects(f.context.DorkPitches.requestDirections(image, 'edit', 'other', {}), /Choose Grok or OpenAI/);
     f.context.state.imagineSource = null; click(f.get('imagine-suggest-directions'));
     assert.equal(f.requests.length, 0); assert.equal(f.overlays.length, 0);
+});
+
+function selectedVideo(f) {
+    f.context.state.videoSelected = { filename: 'scene6.mp4', url: '/videos/scene6.mp4', prompt: 'Keep moving gently right' };
+    f.context.state.videoSceneHistory = Array.from({ length: 6 }, (_, i) => ({ filename: `scene${i + 1}.mp4`, prompt: `Direction ${i + 1}` }));
+    f.context.fetch = async (url, options) => {
+        f.requests.push({ url, body: JSON.parse(options.body) });
+        return { ok: true, async json() { return { url: '/images/actual-last-frame.png' }; } };
+    };
+}
+
+test('Continue extracts the selected clip locally, attaches its exact frame, preserves the draft and makes no provider call', async () => {
+    const f = fixture(); selectedVideo(f); f.get('video-prompt').value = 'My next motion, still going right';
+    await f.context.DorkPitches.continueSelectedVideo();
+    assert.deepEqual(f.requests, [{ url: '/api/video/lastframe', body: { filename: 'scene6.mp4' } }]);
+    assert.deepEqual(f.staged, [{ mode: 'video', url: image }]);
+    assert.equal(f.get('video-prompt').value, 'My next motion, still going right');
+    assert.equal(f.overlays.length, 0);
+    const context = f.context.DorkPitches.contextFor(image, 'video');
+    assert.equal(context.operation, 'continue selected video');
+    assert.equal(context.continuation_video.direction, 'Keep moving gently right');
+    assert.deepEqual(Array.from(context.preceding_scenes), ['Direction 2', 'Direction 3', 'Direction 4', 'Direction 5', 'Direction 6']);
+    assert.equal(context.source_role, 'last frame from the selected completed video');
+});
+
+test('Suggest next scene stages the final frame and opens the editable pitch card without requesting AI', async () => {
+    const f = fixture(); selectedVideo(f);
+    await f.context.DorkPitches.continueSelectedVideo(true);
+    assert.equal(f.requests.length, 1); assert.equal(f.requests[0].url, '/api/video/lastframe');
+    assert.match(f.overlays[0].innerHTML, /Suggest the next scene/);
+});
+
+test('unknown video history is not invented and a different image cannot inherit continuation context', () => {
+    const f = fixture(); selectedVideo(f);
+    assert.deepEqual(Array.from(f.context.DorkPitches.videoSceneContext({ filename: 'unknown.mp4' }).preceding), []);
+    f.context.DorkPitches.captureVideoContext(f.context.state.videoSelected, image);
+    const other = f.context.DorkPitches.contextFor('data:image/png;base64,different-frame', 'video');
+    assert.equal(other.continuation_video, null); assert.deepEqual(Array.from(other.preceding_scenes), []);
+});
+
+test('changed selection during frame extraction aborts staging and concurrent Continue is locked', async () => {
+    const f = fixture(); selectedVideo(f); let release;
+    f.context.fetch = async (url, options) => {
+        f.requests.push({ url });
+        return new Promise(resolve => { release = () => resolve({ ok: true, async json() { return { url: '/images/frame.png' }; } }); });
+    };
+    const pending = f.context.DorkPitches.continueSelectedVideo();
+    await f.context.DorkPitches.continueSelectedVideo();
+    assert.equal(f.requests.length, 1);
+    f.context.state.videoSelected = { filename: 'different.mp4' }; release(); await pending;
+    assert.equal(f.staged.length, 0); assert.match(f.toasts.at(-1)[0], /selection changed/);
+    assert.equal(f.context.DorkPitches.continuationLoading, false);
+});
+
+test('local extraction failure is visible and never retries or overwrites the draft', async () => {
+    const f = fixture(); selectedVideo(f); f.get('video-prompt').value = 'Keep this direction';
+    f.context.fetch = async () => { f.requests.push({}); return { ok: false, async json() { return { error: 'Decoder failed' }; } }; };
+    await f.context.DorkPitches.continueSelectedVideo();
+    assert.equal(f.requests.length, 1); assert.equal(f.staged.length, 0);
+    assert.equal(f.get('video-prompt').value, 'Keep this direction'); assert.equal(f.toasts.at(-1)[0], 'Decoder failed');
+});
+
+test('choosing a continuation direction retains the exact final-frame context through the source handoff', async () => {
+    const f = fixture(); selectedVideo(f); f.get('video-prompt').value = 'Keep rightward motion';
+    await f.context.DorkPitches.continueSelectedVideo(true);
+    await click(f.overlays[0].querySelector('.pitch-custom'));
+    assert.equal(f.context.state.videoSource, 'synthetic-selected-image');
+    assert.equal(f.context.state.videoContinuationSource.filename, 'scene6.mp4');
+    assert.equal(f.context.state.videoFromFreeze, true);
+    assert.equal(f.get('video-prompt').value, 'Keep rightward motion');
+    assert.equal(f.requests.length, 1); assert.equal(f.requests[0].url, '/api/video/lastframe');
 });

@@ -1,6 +1,6 @@
 # v0.1.3
 
-Simpler style controls and refreshed setup documentation.
+A dark studio palette, clearer image uploads and an editable Director draft. Continue now uses the actual final decoded frame, keeps it through video submission and offers explicit next-scene suggestions. Stitching normalizes frame timing, size and audio. Motion prompts preserve your words without adding stock dialogue.
 
 The free source release includes Python setup and desktop launchers. AI features use your own paid xAI account, with optional OpenAI support.
 

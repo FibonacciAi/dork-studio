@@ -36,7 +36,7 @@ On Windows or Linux, create a Python environment, install `requirements.txt`, an
 
 Media estimates appear before Generate. Chat, suggestions, inference, voice and cloud Collections can incur separate provider charges. Provider rates and account terms determine your bill; see [xAI pricing](https://docs.x.ai/developers/pricing).
 
-For sketch-directed video, render a finished still first, then use its **Video** button. Both renders are billed. Active Cast/Looks in Video also prepare a billed still before animation; the estimate includes that step.
+For sketch-directed video, render a finished still first, then use its **Video** button. Both renders are billed. Active Cast/Looks in Video prepare a billed still before animation; the estimate includes that step. **Continue from last frame** keeps the completed clip's actual final frame and skips that preparation. **Suggest next scene** opens editable directions; requesting AI suggestions is billed separately. Stitching joins clips locally with normalized video and audio timing. Model-generated changes in pose or camera motion can still affect a join.
 
 Saved media lives under `~/.dork-studio`. Keys entered in Settings are stored locally in a permissions-restricted file. Keep the app on your computer's local connection. See [selected media import](IMPORT_LOCAL_DATA.md) to bring existing work into the studio.
 

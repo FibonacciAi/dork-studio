@@ -6,8 +6,8 @@
 // ── Skins ────────────────────────────────────────────────────────────────────
 const SKINS = {
     nova: {
-        name: 'Nova', preview: '#2dd4bf',
-        vars: { '--bg-deep':'#050609','--bg-base':'#0b0f14','--bg-surface':'#101820','--bg-card':'#14202a','--bg-elevated':'#192735','--bg-hover':'#223442','--border':'rgba(125,211,252,0.12)','--border-active':'rgba(45,212,191,0.32)','--border-bright':'rgba(251,191,36,0.42)','--accent':'#2dd4bf','--accent-bright':'#7dd3fc','--accent-dim':'#0f766e','--accent-glow':'rgba(45,212,191,0.14)','--accent-glow-strong':'rgba(125,211,252,0.24)','--accent-2':'#fbbf24','--accent-3':'#fb7185','--btn-text':'#061012' }
+        name: 'Nova', preview: '#b396ff',
+        vars: { '--bg-deep':'#0a1322','--bg-base':'#111d31','--bg-surface':'#1c2a3d','--bg-card':'#263249','--bg-elevated':'#303c51','--bg-hover':'#35475e','--border':'#61718c','--border-active':'#b396ff','--border-bright':'#58ddc6','--accent':'#b396ff','--accent-bright':'#d1c1ff','--accent-dim':'#a387ed','--accent-glow':'rgba(179,150,255,0.14)','--accent-glow-strong':'rgba(179,150,255,0.26)','--accent-2':'#58ddc6','--accent-3':'#ff998b','--btn-text':'#19161f' }
     },
     violet: {
         name: 'Violet', preview: '#7c5cfc',
@@ -103,46 +103,6 @@ const IMAGE_STYLE_PRESETS = [
     { id: 'glass-dream',         name: 'Glass Dream',         tag: 'glass',     colors: ['#bae6fd', '#f8fafc'], prompt: 'transparent glass environment, refracted light, delicate edges, floating reflections, clean surreal product-cinema finish' },
 ];
 
-const ADULT_IMAGE_STYLE_PRESETS = [
-    // Latex, PVC, and rubber
-    { id: 'adult-latex-catsuit',      name: 'Latex Catsuit',      tag: 'latex',    adult: true, colors: ['#020617', '#e11d48'], prompt: 'mirror-gloss latex catsuit, tight silhouette, hard rim light, black studio backdrop, high-fetish magazine polish, confident adult pose' },
-    { id: 'adult-latex-gloves',       name: 'Latex Gloves',       tag: 'gloves',   adult: true, colors: ['#0f172a', '#22d3ee'], prompt: 'long latex gloves, wet black shine, fingers posed near lips or collar, tight beauty crop, cool clinical highlights' },
-    { id: 'adult-vinyl-mini',         name: 'Vinyl Mini',         tag: 'vinyl',    adult: true, colors: ['#ec4899', '#111827'], prompt: 'glossy vinyl mini dress, nightclub flash, slick reflections, high heels, adult creator pose, hot but still fashion-framed' },
-    { id: 'adult-clear-pvc',          name: 'Clear PVC',          tag: 'pvc',      adult: true, colors: ['#bae6fd', '#f8fafc'], prompt: 'clear PVC layers over lingerie, condensation shine, icy studio light, transparent straps and glossy seams, futuristic fetish editorial' },
-    { id: 'adult-rubber-clinic',      name: 'Rubber Clinic',      tag: 'rubber',   adult: true, colors: ['#e5e7eb', '#22d3ee'], prompt: 'sterile rubber clinic scene, latex apron and gloves, chrome table, surgical white light, clinical fetish atmosphere, composed adult tension' },
-    { id: 'adult-hooded-latex',       name: 'Hooded Latex',       tag: 'hood',     adult: true, colors: ['#020617', '#e11d48'], prompt: 'smooth latex hood and bodysuit, red rim light, anonymous glossy silhouette, sleek high-fetish portrait, no explicit anatomy' },
-    { id: 'adult-black-tape',         name: 'Black Tape',         tag: 'tape',     adult: true, colors: ['#111827', '#f8fafc'], prompt: 'black body tape styling, graphic lines over skin, flash-lit studio, strategic coverage, minimal fetish-fashion composition' },
-    // Power exchange and restraint
-    { id: 'adult-collar-leash',       name: 'Collar & Leash',     tag: 'collar',   adult: true, colors: ['#020617', '#f43f5e'], prompt: 'leather collar and chain leash, close controlled framing, glossy lips, hand on leash, consensual power-exchange fashion styling' },
-    { id: 'adult-keyholder',          name: 'Keyholder',          tag: 'power',    adult: true, colors: ['#facc15', '#0f172a'], prompt: 'keyholder close-up, tiny gold key on black latex glove, collar hardware, teasing smile, cuckold-control symbolism, luxury hotel light' },
-    { id: 'adult-cuck-chair',         name: 'Cuck Chair',         tag: 'power',    adult: true, colors: ['#7f1d1d', '#facc15'], prompt: 'empty chair at the edge of a hotel room scene, keyholder in sharp focus holding a lock key, jealous power-exchange tension, adult consensual staging' },
-    { id: 'adult-cuffs-chains',       name: 'Cuffs & Chains',     tag: 'cuffs',    adult: true, colors: ['#94a3b8', '#111827'], prompt: 'polished wrist cuffs, chain detail, black leather surface, close crop, metallic highlights, restraint-fashion still life' },
-    { id: 'adult-cage-set',           name: 'Cage Set',           tag: 'cage',     adult: true, colors: ['#64748b', '#ef4444'], prompt: 'industrial cage set, red club light, leather outfit, steel bars casting graphic shadows, adult kink editorial scene' },
-    { id: 'adult-rope-bondage',       name: 'Rope Bondage',       tag: 'rope',     adult: true, colors: ['#7c2d12', '#fde68a'], prompt: 'intricate shibari rope patterns, warm light, calm poised body line, rope geometry as the main visual focus, consensual restraint' },
-    { id: 'adult-blindfold',          name: 'Blindfold',          tag: 'sensory',  adult: true, colors: ['#020617', '#f8fafc'], prompt: 'black silk blindfold, soft side light, parted lips, close intimate portrait, sensory-deprivation styling, adult glamour restraint' },
-    { id: 'adult-dungeon-noir',       name: 'Dungeon Noir',       tag: 'dungeon',  adult: true, colors: ['#111827', '#7f1d1d'], prompt: 'private dungeon room, red practical lights, leather bench, chains on wall, noir shadows, expensive kink-club mood' },
-    // Feet, socks, shoes, and legs
-    { id: 'adult-feet',               name: 'Feet',               tag: 'feet',     adult: true, colors: ['#fbbf24', '#fda4af'], prompt: 'foot-focused glamour close-up, high heels slipped off, silk sheets, clean pedicure detail, warm lamp light, shallow focus' },
-    { id: 'adult-soles-closeup',      name: 'Soles Close-Up',     tag: 'feet',     adult: true, colors: ['#fde68a', '#111827'], prompt: 'bare soles close to lens, soft bed behind, shallow focus, warm lamp light, clean adult foot-fetish composition' },
-    { id: 'adult-dirty-ankle-socks',  name: 'Dirty Ankle Socks',  tag: 'socks',    adult: true, colors: ['#f5f5f4', '#64748b'], prompt: 'worn white ankle socks, visibly dirty soles, bedroom floor, low phone flash, foot-focused adult fetish realism, non-graphic' },
-    { id: 'adult-sock-fetish',        name: 'Sock Fetish',        tag: 'socks',    adult: true, colors: ['#e5e7eb', '#ef4444'], prompt: 'socked feet as the hero subject, white cotton texture, stretched toes, rumpled sheets, close low angle, intimate adult creator-photo style' },
-    { id: 'adult-thigh-high-socks',   name: 'Thigh-High Socks',   tag: 'socks',    adult: true, colors: ['#f8fafc', '#111827'], prompt: 'thigh-high socks, soft bedroom light, cropped leg-focused pose, cozy but charged fetish framing, clean adult glamour' },
-    { id: 'adult-ballet-flats',       name: 'Ballet Flats',       tag: 'shoes',    adult: true, colors: ['#f9a8d4', '#7c2d12'], prompt: 'soft leather ballet flats with flexible sole, arched foot, scuffed leather texture, low intimate angle, shoe-fetish still life' },
-    { id: 'adult-shoe-worship',       name: 'Shoe Worship',       tag: 'shoes',    adult: true, colors: ['#dc2626', '#020617'], prompt: 'stiletto heel as hero object, low worshipful framing, glossy black floor, cropped kneeling silhouette implied, luxury footwear fetish mood' },
-    { id: 'adult-thigh-high-boots',   name: 'Thigh-High Boots',   tag: 'boots',    adult: true, colors: ['#111827', '#facc15'], prompt: 'black thigh-high boots, glossy heel, strong stance, low camera angle, club-floor reflections, fetish footwear focus' },
-    { id: 'adult-stockings-garter',   name: 'Stockings & Garter', tag: 'hosiery',  adult: true, colors: ['#020617', '#f9a8d4'], prompt: 'garter belt and stocking tops, lace texture, soft boudoir light, cropped thigh-focused glamour composition, adult editorial heat' },
-    // Creator, bathroom, and club looks
-    { id: 'adult-mirror-selfie',      name: 'Mirror Selfie',      tag: 'selfie',   adult: true, colors: ['#f9a8d4', '#fde68a'], prompt: 'bedroom mirror selfie, phone flash, messy sheets, lingerie or cropped tee, confident creator-feed realism, sharp face and body detail' },
-    { id: 'adult-bathroom-tease',     name: 'Bathroom Tease',     tag: 'bathroom', adult: true, colors: ['#bae6fd', '#111827'], prompt: 'tiled bathroom mirror selfie, sink counter, steam on glass, wet hair, shirt or waistband tugged, suggestive adult realism, no graphic fluids or waste' },
-    { id: 'adult-toilet-tease',       name: 'Toilet Tease',       tag: 'bathroom', adult: true, colors: ['#f8fafc', '#64748b'], prompt: 'locked bathroom phone photo, closed toilet lid visible as background fixture, legs and socks in frame, charged non-graphic fetish tease, no waste or fluids' },
-    { id: 'adult-cam-room',           name: 'Cam Room',           tag: 'creator',  adult: true, colors: ['#f472b6', '#22d3ee'], prompt: 'creator cam-room setup, ring light, LED strips, plush chair, direct-to-camera adult pose, paid-page aesthetic without explicit sex' },
-    { id: 'adult-red-room',           name: 'Red Room',           tag: 'bdsm',     adult: true, colors: ['#dc2626', '#111827'], prompt: 'red-lit private room, leather furniture, silk sheets, shadowy high-end adult club mood, charged but composed' },
-    { id: 'adult-club-cage',          name: 'Club Cage',          tag: 'club',     adult: true, colors: ['#ec4899', '#22d3ee'], prompt: 'cage platform in a fetish club, chrome grid shadows, pink-blue lights, leather or latex outfit, sweaty nightlife atmosphere' },
-    { id: 'adult-wax-play',           name: 'Wax Play',           tag: 'wax',      adult: true, colors: ['#f97316', '#7f1d1d'], prompt: 'red candle wax on skin, dark room, molten gloss close-up, careful kink-editorial composition, no injury gore' },
-    { id: 'adult-oil-slick',          name: 'Oil Slick',          tag: 'gloss',    adult: true, colors: ['#fbbf24', '#111827'], prompt: 'oiled skin, black background, gold highlights, slick body lines, glossy adult studio glamour, sharp specular detail' },
-];
-
-const ADULT_PRESET_GUARDRAILS = 'Adult-only preset boundaries: all subjects are clearly adult, consensual staging only, no minors or ageplay, no coercion or nonconsent, no incest or taboo framing, no bestiality, no explicit sex acts, no close-up genital anatomy, no graphic bodily fluids or waste, no sexualized realistic public figures.';
 const DEFAULT_IMAGE_MODEL = 'grok-imagine-image-2.0';
 const DEFAULT_VIDEO_MODEL = 'grok-imagine-video-1.5-lite';
 const DEFAULT_IMAGE_RESOLUTION = '2k';
@@ -206,7 +166,6 @@ const state = {
     imagineStylePreset: null,
     imagineImages: [],
     imagineSelected: null,
-    adultStylesEnabled: false,
     mediaCapabilities: DEFAULT_MEDIA_CAPABILITIES,
     // Director
     directorDraft: null,
@@ -378,7 +337,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCollectionSelectors();
     restorePersistence();
     updateAgentTeamVisibility();
-    switchPanel('director');
+    const entryPanel = new URLSearchParams(window.location.search).get('panel');
+    switchPanel(entryPanel === 'settings' ? 'settings' : 'director');
 });
 
 // ── Navigation ───────────────────────────────────────────────────────────────
@@ -886,6 +846,28 @@ function removeChatAttachment(index) {
 }
 
 // ── Director ────────────────────────────────────────────────────────────────
+function wireImageUploadTarget(dropZone, input, onFile) {
+    if (!dropZone || !input) return;
+    dropZone.addEventListener('click', () => input.click());
+    dropZone.addEventListener('keydown', event => {
+        if (event.target === dropZone && (event.key === 'Enter' || event.key === ' ')) {
+            event.preventDefault();
+            input.click();
+        }
+    });
+    dropZone.addEventListener('dragover', event => {
+        event.preventDefault(); dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', event => {
+        event.preventDefault(); dropZone.classList.remove('dragover');
+        if (event.dataTransfer.files.length) onFile(event.dataTransfer.files[0]);
+    });
+    input.addEventListener('change', event => {
+        if (event.target.files.length) onFile(event.target.files[0]);
+    });
+}
+
 function setupDirector() {
     document.getElementById('director-build')?.addEventListener('click', () => buildDirectorPrompt('build'));
     document.getElementById('director-build-top')?.addEventListener('click', () => buildDirectorPrompt('build'));
@@ -909,19 +891,7 @@ function setupDirector() {
     });
     const sourceDrop = document.getElementById('director-drop');
     const sourceInput = document.getElementById('director-file');
-    if (sourceDrop && sourceInput) {
-        sourceDrop.addEventListener('click', () => sourceInput.click());
-        sourceDrop.addEventListener('dragover', e => { e.preventDefault(); sourceDrop.classList.add('dragover'); });
-        sourceDrop.addEventListener('dragleave', () => sourceDrop.classList.remove('dragover'));
-        sourceDrop.addEventListener('drop', e => {
-            e.preventDefault();
-            sourceDrop.classList.remove('dragover');
-            if (e.dataTransfer.files.length) handleDirectorSourceFile(e.dataTransfer.files[0], false);
-        });
-        sourceInput.addEventListener('change', e => {
-            if (e.target.files.length) handleDirectorSourceFile(e.target.files[0], false);
-        });
-    }
+    wireImageUploadTarget(sourceDrop, sourceInput, file => handleDirectorSourceFile(file, false));
     document.getElementById('director-vision')?.addEventListener('keydown', e => {
         if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
             e.preventDefault();
@@ -930,10 +900,6 @@ function setupDirector() {
     });
     document.querySelectorAll('.director-chip').forEach(chip => {
         chip.addEventListener('click', () => {
-            if (chip.classList.contains('adult-chip') && !state.adultStylesEnabled) {
-                toast('Enable adult styles in Settings first', 'info');
-                return;
-            }
             chip.classList.toggle('active');
             refreshDirectorContext();
             savePersistence();
@@ -1026,9 +992,6 @@ function renderDirectorStyleSelect() {
     select.innerHTML = [
         '<option value="">Infer from vision</option>',
         `<optgroup label="Image Styles">${IMAGE_STYLE_PRESETS.map(preset => `<option value="${escapeAttr(preset.id)}">${escapeHtml(preset.name)}</option>`).join('')}</optgroup>`,
-        state.adultStylesEnabled
-            ? `<optgroup label="Adult Styles">${ADULT_IMAGE_STYLE_PRESETS.map(preset => `<option value="${escapeAttr(preset.id)}">${escapeHtml(preset.name)}</option>`).join('')}</optgroup>`
-            : '',
     ].join('');
     select.value = state.directorStylePreset?.id || '';
 }
@@ -1063,15 +1026,13 @@ function getDirectorContext() {
         interest_areas: document.getElementById('director-interests')?.value.trim() || '',
         interest_chips: getDirectorChips(),
         source_image: sourceImage,
-        selected_style: selectedStyle ? { name: selectedStyle.name, tag: selectedStyle.tag, prompt: selectedStyle.prompt, adult: Boolean(selectedStyle.adult) } : null,
+        selected_style: selectedStyle ? { name: selectedStyle.name, tag: selectedStyle.tag, prompt: selectedStyle.prompt } : null,
         available_style_presets: getAvailableImageStylePresets().map(preset => ({
             id: preset.id,
             name: preset.name,
             tag: preset.tag,
             prompt: preset.prompt,
-            adult: Boolean(preset.adult),
         })),
-        adult_styles_enabled: state.adultStylesEnabled,
         active_character_refs: cast,
         active_style_refs: styleRefs,
         image_model: state.imagineModel || DEFAULT_IMAGE_MODEL,
@@ -1112,9 +1073,6 @@ Prompt rules:
 - If the vision is a whole story, extract the strongest imageable moment and preserve character/story continuity.
 - Favor crisp character identity, coherent anatomy, specific camera language, and strong material detail.
 - If active character/style references are listed, explicitly preserve them.
-- Standard mode stays non-adult.
-- Adult mode may use heavy-R adult fetish, kink, latex/PVC/rubber, restraint, keyholder/cuckold-control symbolism, socks/feet/footwear, bathroom/selfie, club, dungeon, boudoir, and creator-feed direction when the user's context supports it.
-- Adult boundaries: all subjects clearly adult, consensual staging only, no minors or ageplay, no coercion or nonconsent, no incest or taboo framing, no bestiality, no explicit sex acts, no close-up genital anatomy, no graphic bodily fluids or waste, no sexualized realistic public figures.
 - Do not be coy, but do not make the output pornographic.`;
 }
 
@@ -1178,7 +1136,7 @@ async function buildDirectorPrompt(mode = 'build') {
         directive: mode === 'variations'
             ? 'Create distinct variations around the same user taste. Keep the best primary prompt too.'
             : mode === 'refine'
-                ? 'Make the prompt more specific, sexier/stronger when adult mode is enabled, and more model-ready. Improve clarity and visual power.'
+                ? 'Make the prompt more specific and model-ready. Improve clarity and visual power.'
                 : mode === 'image'
                     ? 'Infer the image style and source prompt. Build a reusable generation prompt that captures the image, then improve it using any user vision/interests.'
                 : 'Build the strongest prompt from this vision.',
@@ -1293,12 +1251,10 @@ function loadDirectorHistory(index) {
 }
 
 function refreshDirectorContext() {
-    const adult = document.getElementById('director-adult-status');
     const model = document.getElementById('director-image-model-label');
     const aspect = document.getElementById('director-aspect-label');
     const cast = document.getElementById('director-cast-label');
     const source = document.getElementById('director-source-label');
-    if (adult) adult.textContent = state.adultStylesEnabled ? 'On' : 'Off';
     if (model) model.textContent = state.imagineModel || DEFAULT_IMAGE_MODEL;
     if (aspect) aspect.textContent = state.imagineAspectRatio || DEFAULT_IMAGE_ASPECT_RATIO;
     if (cast) {
@@ -2127,6 +2083,8 @@ async function loadImageAsVideoSource(url, dataUrl) {
         state.videoSource = prepared.split(',')[1];
         state.videoSourceOrigin = { url, raw: state.videoSource };
         state.videoSourceUrl = prepared;
+        state.videoFromFreeze = false;
+        state.videoContinuationSource = null;
         document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${escapeAttr(prepared)}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Paid AI next-scene suggestions">Suggest</button></div>`;
     } finally { state.videoSourceLoading = false; }
 }
@@ -2887,19 +2845,12 @@ function setupImagine() {
     document.getElementById('style-clear')?.addEventListener('click', clearImageStylePreset);
     renderImageStylePresets();
 
-    const dropZone = document.getElementById('imagine-drop');
-    if (dropZone) {
-        dropZone.addEventListener('click', () => document.getElementById('imagine-file').click());
-        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-        dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer.files.length) handleImagineFile(e.dataTransfer.files[0]); });
-    }
-    document.getElementById('imagine-file').addEventListener('change', e => { if (e.target.files.length) handleImagineFile(e.target.files[0]); });
+    wireImageUploadTarget(document.getElementById('imagine-drop'), document.getElementById('imagine-file'), handleImagineFile);
     document.getElementById('imagine-prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateImage(); } });
 }
 
 function getAvailableImageStylePresets() {
-    return state.adultStylesEnabled ? [...IMAGE_STYLE_PRESETS, ...ADULT_IMAGE_STYLE_PRESETS] : IMAGE_STYLE_PRESETS;
+    return IMAGE_STYLE_PRESETS;
 }
 
 function findImageStylePreset(id) {
@@ -2917,7 +2868,6 @@ function refreshStyleControls() {
     renderChatStyleSelect();
     renderDirectorStyleSelect();
     renderImageStylePresets();
-    updateAdultStyleToggle();
     refreshDirectorContext();
 }
 
@@ -2927,9 +2877,6 @@ function renderChatStyleSelect() {
     select.innerHTML = [
         '<option value="">No style</option>',
         `<optgroup label="Image Styles">${IMAGE_STYLE_PRESETS.map(preset => `<option value="${escapeAttr(preset.id)}">${escapeHtml(preset.name)}</option>`).join('')}</optgroup>`,
-        state.adultStylesEnabled
-            ? `<optgroup label="Adult Styles">${ADULT_IMAGE_STYLE_PRESETS.map(preset => `<option value="${escapeAttr(preset.id)}">${escapeHtml(preset.name)}</option>`).join('')}</optgroup>`
-            : '',
     ].join('');
     select.value = state.chatStylePreset?.id || '';
 }
@@ -2954,21 +2901,6 @@ function randomChatStylePreset() {
     selectChatStylePreset(preset.id);
 }
 
-function updateAdultStyleToggle() {
-    const toggle = document.getElementById('adult-styles-toggle');
-    if (toggle) toggle.checked = state.adultStylesEnabled;
-}
-
-function setAdultStylesEnabled(enabled) {
-    state.adultStylesEnabled = Boolean(enabled);
-    if (!state.adultStylesEnabled) {
-        document.querySelectorAll('.director-chip.adult-chip.active').forEach(chip => chip.classList.remove('active'));
-    }
-    refreshStyleControls();
-    savePersistence();
-    toast(state.adultStylesEnabled ? 'Adult styles enabled' : 'Adult styles disabled', state.adultStylesEnabled ? 'success' : 'info');
-}
-
 function renderImageStylePresets() {
     const grid = document.getElementById('image-style-presets');
     if (!grid) return;
@@ -2982,7 +2914,6 @@ function renderImageStylePresets() {
     grid.innerHTML = [
         '<div class="style-preset-section">Image Styles</div>',
         ...IMAGE_STYLE_PRESETS.map(renderPreset),
-        ...(state.adultStylesEnabled ? ['<div class="style-preset-section adult">Adult Styles</div>', ...ADULT_IMAGE_STYLE_PRESETS.map(renderPreset)] : []),
     ].join('');
     updateStylePresetActive();
 }
@@ -3057,9 +2988,6 @@ function composeImagePrompt(rawPrompt, source = 'imagine') {
     if (window.DorkMedia?.instructionFor('image')) parts.push(window.DorkMedia.instructionFor('image'));
     if (selectedPreset) {
         parts.push(`Style preset: ${selectedPreset.name}. ${selectedPreset.prompt}.`);
-        if (selectedPreset.adult) {
-            parts.push(ADULT_PRESET_GUARDRAILS);
-        }
     }
     const intensity = source === 'chat'
         ? (document.getElementById('chat-image-strength')?.value || state.imagineIntensity || 'clean')
@@ -3343,14 +3271,7 @@ function setupVideo() {
     document.getElementById('video-aspect')?.addEventListener('change', e => setSharedMediaSetting('videoAspectRatio', e.target.value, ['video-aspect', 'chat-video-aspect']));
     state.videoModel = document.getElementById('video-model')?.value || DEFAULT_VIDEO_MODEL;
     document.getElementById('video-smart')?.addEventListener('click', applySmartVideoDefaults);
-    const dropZone = document.getElementById('video-drop');
-    if (dropZone) {
-        dropZone.addEventListener('click', () => document.getElementById('video-file').click());
-        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-        dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer.files.length) handleVideoFile(e.dataTransfer.files[0]); });
-    }
-    document.getElementById('video-file').addEventListener('change', e => { if (e.target.files.length) handleVideoFile(e.target.files[0]); });
+    wireImageUploadTarget(document.getElementById('video-drop'), document.getElementById('video-file'), handleVideoFile);
     document.getElementById('video-prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateVideo(); } });
 }
 
@@ -3372,32 +3293,18 @@ function applySmartVideoDefaults() {
     setSharedMediaSetting('videoDuration', smartVideoDuration(prompt), ['video-duration', 'chat-video-duration']);
     setSharedMediaSetting('videoResolution', '720p', ['video-resolution', 'chat-video-resolution']);
     setSharedMediaSetting('videoAspectRatio', inferMediaAspect(prompt, 'video'), ['video-aspect', 'chat-video-aspect']);
-    if (textarea && prompt.trim() && !videoPromptHasSpeech(prompt)) textarea.value = composeVideoPrompt(prompt);
+    if (textarea && prompt.trim()) textarea.value = composeVideoPrompt(prompt);
     toast('Smart video setup applied', 'success');
 }
 
-function videoPromptHasSpeech(prompt) {
-    return /["“”]|spoken words?|dialogue|voiceover|says?|whispers?|shouts?|speaks?/i.test(prompt || '');
-}
-
-function inferSpokenLine(prompt) {
-    const text = String(prompt || '').toLowerCase();
-    if (/horror|nightmare|scary|haunted|terror|blood|monster/.test(text)) return "Do not look away.";
-    if (/ritual|altar|gold|oracle|temple|cult|ceremony/.test(text)) return "The ritual begins now.";
-    if (/cyber|neon|noir|detective|city|rain/.test(text)) return "You know why I am here.";
-    if (/fight|battle|chase|run|escape|storm|attack|war/.test(text)) return "Move now.";
-    if (/fashion|runway|glam|luxury|velvet|latex|mirror|club|boudoir/.test(text)) return "Keep your eyes on me.";
-    if (/romance|kiss|lovers|date|soft|bedroom/.test(text)) return "Come closer.";
-    if (/funny|comedy|party|chaos/.test(text)) return "This is getting ridiculous.";
-    return "This is the moment.";
-}
-
 function composeVideoPrompt(rawPrompt) {
-    if (window.DorkMedia?.instructionFor('video')) rawPrompt += '\n\n' + window.DorkMedia.instructionFor('video');
     const prompt = String(rawPrompt || '').trim();
-    if (!prompt || videoPromptHasSpeech(prompt)) return prompt;
-    const line = inferSpokenLine(prompt);
-    return `${prompt}\nSpoken words: "${line}" Keep the line brief, audible, and in character for the scene.`;
+    const guide = window.DorkMedia?.instructionFor('video');
+    return guide && !prompt.includes(guide) ? `${prompt}\n\n${guide}`.trim() : prompt;
+}
+
+function isVideoContinuationSource(raw) {
+    return Boolean(raw && state.videoContinuationSource?.raw === raw);
 }
 
 function getVideoApiSettings() {
@@ -3420,7 +3327,7 @@ function handleVideoFile(file) {
         const dataUrl = await assetLibDownscale(e.target.result, 2048);
         state.videoSource = dataUrl.split(',')[1];
         state.videoSourceLoading = false;
-        document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${dataUrl}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Get AI prompt suggestions">Suggest</button></div>`;
+        document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${dataUrl}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Choose whether to request billed AI scene suggestions">Suggest directions…</button></div>`;
     };
     reader.readAsDataURL(file);
 }
@@ -3430,91 +3337,25 @@ function clearVideoSource() {
     state.videoSourceLoading = false;
     state.videoFromFreeze = false;
     state.videoNarrative = [];
+    state.videoContinuationSource = null;
     document.getElementById('video-source-preview').innerHTML = '';
     document.getElementById('video-file').value = '';
     document.querySelectorAll('#video-image-picker img').forEach(el => el.classList.remove('active'));
 }
 
-async function suggestVideoPrompts() {
-    const previewImg = document.querySelector('#video-source-preview img');
-    if (!previewImg) return toast('No source image loaded', 'error');
+function suggestVideoPrompts() {
+    const image = document.querySelector('#video-source-preview img')?.src;
+    if (!image) return toast('Attach a source image first.', 'info');
+    return DorkPitches.open(image, 'video');
+}
 
-    // Get image as data URL
-    const imgDataUrl = previewImg.src.startsWith('data:') ? previewImg.src : await fetchAsDataUrl(previewImg.src);
-
-    // Build context-aware system prompt
-    let sysPrompt;
-    if (state.videoFromFreeze && state.videoNarrative.length > 0) {
-        const prevScenes = state.videoNarrative.map((p, i) => `Scene ${i + 1}: ${p}`).join('\n');
-        sysPrompt = `You are a creative video director continuing an ongoing narrative. The user has been generating a sequence of connected video scenes and just froze a frame to continue the story.
-
-Previous scenes in order:
-${prevScenes}
-
-This image is the frozen frame from the last scene. Suggest 3 prompts for the NEXT scene that naturally continue the action/story from where it left off. Each prompt should flow seamlessly from this frame as the opening shot. Return ONLY a JSON array of 3 strings, each under 100 chars. Be specific about camera movement and action. No explanation, just the JSON array.`;
-    } else {
-        sysPrompt = 'You are a creative video director. Given an image, suggest 3 different ways to animate it as a video. Return ONLY a JSON array of 3 strings, each being a short video prompt under 100 chars. Each prompt must include one short quoted spoken line that matches the theme. Be creative: one cinematic, one dynamic, one atmospheric. No explanation, just the JSON array.';
-    }
-
-    // Show inline suggestions area
-    const preview = document.getElementById('video-source-preview');
-    const existingSuggestions = preview.querySelector('.video-suggestions');
-    if (existingSuggestions) existingSuggestions.remove();
-
-    const suggestDiv = document.createElement('div');
-    suggestDiv.className = 'video-suggestions';
-    suggestDiv.innerHTML = `<div style="display:flex;align-items:center;gap:6px;padding:4px 0">
-        <div class="typing-indicator" style="display:inline-flex"><span></span><span></span><span></span></div>
-        <select id="video-suggest-provider" style="font-size:10px;padding:1px 4px;border-radius:3px;background:var(--bg-elevated);color:var(--text-muted);border:1px solid var(--border)">
-            <option value="grok">Grok</option>
-            <option value="chatgpt">ChatGPT</option>
-        </select>
-    </div>`;
-    preview.appendChild(suggestDiv);
-
-    const videoSuggestProvider = document.getElementById('video-suggest-provider')?.value || 'grok';
-
-    try {
-        const videoSuggestEndpoint = videoSuggestProvider === 'chatgpt' ? '/api/chat/sync-openai' : '/api/chat/sync';
-        const videoSuggestPayload = videoSuggestProvider === 'chatgpt'
-            ? {
-                messages: [{ role: 'user', content: state.videoFromFreeze
-                    ? 'Suggest 3 prompts for the next video scene. Include one short quoted spoken line in each. Return ONLY a JSON array of 3 strings, each under 100 chars.'
-                    : 'Suggest 3 creative video animations. Include one short quoted spoken line in each. Return ONLY a JSON array of 3 strings, each under 100 chars.' }],
-                system: sysPrompt
-              }
-            : {
-                model: DEFAULT_CHAT_MODEL,
-                messages: [{ role: 'user', content: [
-                    { type: 'text', text: state.videoFromFreeze ? 'Suggest 3 prompts for the next scene continuing from this frozen frame. Include one short quoted spoken line in each.' : 'Suggest 3 creative video animations for this image. Include one short quoted spoken line in each.' },
-                    { type: 'image_url', image_url: { url: imgDataUrl } }
-                ]}],
-                system: sysPrompt
-              };
-
-        const resp = await fetch(videoSuggestEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(videoSuggestPayload)
-        });
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-
-        let suggestions;
-        try {
-            const cleaned = data.content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
-            suggestions = JSON.parse(cleaned);
-        } catch { suggestions = [data.content]; }
-
-        suggestDiv.innerHTML = suggestions.map(s =>
-            `<button class="prompt-suggest-option" onclick="document.getElementById('video-prompt').value=this.textContent;this.closest('.video-suggestions').remove()">${escapeHtml(s)}</button>`
-        ).join('');
-    } catch (err) {
-        suggestDiv.innerHTML = `<div style="color:var(--text-dim);font-size:11px;padding:4px">Couldn't generate suggestions</div>`;
-    }
+function stageVideoContinuation(showSuggestions = false) {
+    return DorkPitches.continueSelectedVideo(showSuggestions);
 }
 
 async function createVideoCompositeSource(rawPrompt, userSourceB64 = null, options = {}) {
+    // A continuation must start from the actual final frame, not a new Cast edit.
+    if (isVideoContinuationSource(userSourceB64)) return null;
     const chars = typeof assetLibActiveChars === 'function' ? assetLibActiveChars() : [];
     const styles = typeof assetLibActiveStyles === 'function' ? assetLibActiveStyles() : [];
     if (!assetLib.autoAttach || chars.length + styles.length === 0) return null;
@@ -3593,31 +3434,29 @@ async function generateVideo() {
     try {
         const settings = getVideoApiSettings();
         let precomposed = null;
-        if (assetLib.autoAttach && assetLibActiveChars().length + assetLibActiveStyles().length > 0) {
+        const continuation = isVideoContinuationSource(state.videoSource);
+        if (!continuation && assetLib.autoAttach && assetLibActiveChars().length + assetLibActiveStyles().length > 0) {
             btn.innerHTML = '<div class="spinner"></div> Building cast image...';
             document.getElementById('video-status').innerHTML = '<div class="status-badge processing"><span class="status-dot"></span> Keyframe</div>';
             precomposed = await createVideoCompositeSource(prompt, state.videoSource, settings);
             if (precomposed?.image) {
                 state.videoSource = precomposed.image;
                 state.videoSourceLoading = false;
-                document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${precomposed.dataUrl}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Get AI prompt suggestions">Suggest</button></div>`;
+                document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${precomposed.dataUrl}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Choose whether to request billed AI scene suggestions">Suggest directions…</button></div>`;
             }
             btn.innerHTML = '<div class="spinner"></div> Starting...';
             document.getElementById('video-status').innerHTML = '<div class="status-badge processing"><span class="status-dot"></span> Processing</div>';
         }
         const payload = { prompt, ...settings };
         if (state.videoSource) payload.image = state.videoSource;
-        if (precomposed?.image) payload.asset_refs_precomposed = true;
+        if (precomposed?.image || continuation) payload.asset_refs_precomposed = true;
         state.lastVideoPayload = payload;
         state.videoRetries = 0;
         const resp = await fetch('/api/video/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         const data = await resp.json();
         if (data.error) throw new Error(data.error);
-        // Track narrative for scene continuity
-        state.videoNarrative.push(prompt);
-        if (state.videoNarrative.length > 5) state.videoNarrative.shift();
         state.videoFromFreeze = false;
-        if (data.id) pollVideo(data.id);
+        if (data.id) pollVideo(data.id, prompt);
     } catch (err) {
         toast(err.message, 'error');
         document.getElementById('video-status').innerHTML = '<div class="status-badge error"><span class="status-dot"></span> Error</div>';
@@ -3626,7 +3465,7 @@ async function generateVideo() {
     }
 }
 
-function pollVideo(videoId) {
+function pollVideo(videoId, submittedDirection = '') {
     if (state.videoPolling) {
         clearInterval(state.videoPolling);
         state.videoPolling = null;
@@ -3638,7 +3477,12 @@ function pollVideo(videoId) {
             if (data.status === 'completed') {
                 clearInterval(state.videoPolling);
                 state.videoPolling = null;
-                state.videos.unshift({ filename: data.filename, url: data.url });
+                state.videos.unshift({ filename: data.filename, url: data.url, prompt: submittedDirection });
+                if (submittedDirection) {
+                    state.videoNarrative.push(submittedDirection);
+                    if (state.videoNarrative.length > 5) state.videoNarrative.shift();
+                    state.videoSceneHistory = [...(state.videoSceneHistory || []), { filename: data.filename, prompt: submittedDirection }].slice(-10);
+                }
                 selectVideo(state.videos[0]);
                 refreshVideoGallery();
                 document.getElementById('video-status').innerHTML = '<div class="status-badge complete"><span class="status-dot"></span> Done</div>';
@@ -3672,9 +3516,12 @@ function selectVideo(vid) {
     document.getElementById('video-preview').innerHTML = `
         <video id="video-player" src="${vid.url}" controls autoplay></video>
         <div class="video-controls-bar">
-            <button class="btn btn-sm btn-ghost" onclick="freezeFrameAsSource()">Freeze Frame → Source</button>
+            <button class="btn btn-sm btn-secondary" data-continuation-action onclick="stageVideoContinuation(false)">Continue from last frame</button>
+            <button class="btn btn-sm btn-primary" data-continuation-action onclick="stageVideoContinuation(true)">Suggest next scene…</button>
+            <button class="btn btn-sm btn-ghost" onclick="freezeFrameAsSource()">Use current frame</button>
             <button class="btn btn-sm btn-ghost" id="loop-toggle" onclick="toggleLoop()">Loop: Off</button>
-        </div>`;
+        </div>
+        <p class="continuation-hint">Continue stages a local frame. AI suggestions and generating the next video are separate billed actions.</p>`;
 }
 
 function toggleLoop() {
@@ -3708,7 +3555,7 @@ async function freezeFrameAsSource() {
         // Set frozen frame as video source
         state.videoSource = dataUrl.split(',')[1];
         state.videoSourceLoading = false;
-        document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${dataUrl}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Get AI prompt suggestions">Suggest</button></div>`;
+        document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${dataUrl}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Choose whether to request billed AI scene suggestions">Suggest directions…</button></div>`;
 
         // Also add to imagine gallery so it's reusable
         state.imagineImages.unshift({ filename: data.filename, url: data.url });
@@ -3716,7 +3563,7 @@ async function freezeFrameAsSource() {
         refreshVideoImagePicker();
         loadLibrary();
 
-        state.videoFromFreeze = true;
+        DorkPitches.captureVideoContext(state.videoSelected, dataUrl, 'current frame');
         toast('Frame frozen → set as source', 'success');
     } catch (err) { toast(err.message, 'error'); }
 }
@@ -3872,8 +3719,10 @@ function pickImageForVideo(url, filename) {
     fetch(url).then(r => r.blob()).then(blob => {
         const reader = new FileReader();
         reader.onload = e => {
+            state.videoFromFreeze = false;
+            state.videoContinuationSource = null;
             state.videoSource = e.target.result.split(',')[1];
-            document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${e.target.result}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Get AI prompt suggestions">Suggest</button></div>`;
+            document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${e.target.result}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Choose whether to request billed AI scene suggestions">Suggest directions…</button></div>`;
             // Highlight selected
             document.querySelectorAll('#video-image-picker img').forEach(el =>
                 el.classList.toggle('active', el.title === filename)
@@ -4314,10 +4163,7 @@ function buildDorkSystemPrompt() {
     const styleLine = state.chatStylePreset
         ? `\n\nCurrent chat image style preset: ${state.chatStylePreset.name}. The app will apply it automatically to generated image prompts.`
         : '';
-    const adultLine = state.adultStylesEnabled
-        ? '\n\nAdult image styles are enabled in Settings. Adult-only presets are fetish-focused and may use blunt latex, PVC, rubber, collars/leashes, keyholder/cuckold-control symbolism, cuffs/chains, cages, socks, feet, shoes, boots, bathroom/mirror selfie, club, dungeon, boudoir, and kink-editorial direction when relevant. Boundaries: adult subjects only, consensual staging, no minors or ageplay, no coercion or nonconsent, no incest or taboo framing, no bestiality, no explicit sex acts, no close-up genital anatomy, no graphic bodily fluids or waste, no sexualized realistic public figures.'
-        : '\n\nAdult image styles are disabled in Settings. Do not steer image prompts into adult-only boudoir, fetish, kink, erotic, or heavy-R adult aesthetics unless the user explicitly enables them.';
-    return DORK_SYSTEM_PROMPT + styleLine + adultLine + (state.systemPrompt ? '\n\nAdditional instructions from user:\n' + state.systemPrompt : '');
+    return DORK_SYSTEM_PROMPT + styleLine + (state.systemPrompt ? '\n\nAdditional instructions from user:\n' + state.systemPrompt : '');
 }
 
 // ── Code ─────────────────────────────────────────────────────────────────────
@@ -4390,7 +4236,7 @@ You have built-in creative tools. To use them, embed action tags in your respons
 - NEVER describe what you would generate without actually generating it. Use the tag.
 - The app exposes current xAI Imagine controls in main chat and tabs: Image Quality / Quality Latest, up to 10 image outputs, 1K/2K resolution, aspect ratio, and style strength. Active library refs are composited for stronger character/style consistency before image edits or video keyframes.
 - Video uses the selected Grok Imagine Video model, including Video 1.5 when available, with 1-15s duration, 480p/720p/1080p, aspect ratio, image-to-video, extension, stitching, and brief spoken lines when the prompt implies dialogue or performance.
-- CONTENT POLICY FOR PROMPTS: Keep default image prompts non-adult unless the user explicitly asks or Adult Image Styles are enabled. R-rated horror, violence, blood, dark humor, weapons, drugs, monsters, and edgy cinematic material are allowed. The hard limits are explicit pornography, minors in sexualized contexts, and realistic real people in compromising situations.
+- CONTENT POLICY FOR PROMPTS: Keep default image prompts non-adult unless the user explicitly asks. R-rated horror, violence, blood, dark humor, weapons, drugs, monsters, and edgy cinematic material are allowed. The hard limits are explicit pornography, minors in sexualized contexts, and realistic real people in compromising situations.
 
 **Slash commands (type in this chat):**
 - /imagine [prompt] — Generate an image from text
@@ -4410,14 +4256,14 @@ You have built-in creative tools. To use them, embed action tags in your respons
 **Multi-Agent mode:** When the user selects "Grok 4.20 Multi-Agent" model, you orchestrate a team of 3 specialist agents: a researcher, a coder, and a creative.
 **File uploads:** User can attach images in Chat, Code, and Director. Director source images are analyzed for subject, style, lighting, camera, and prompt structure.
 **Cross-tab chaining:** Images generated in chat have Edit and Video buttons to chain into those workflows.
-**Image styles:** The user can pick a chat image style preset near the chat input. If selected, the app applies it after your action tag. Adult-only presets appear only after the Settings toggle is enabled.
+**Image styles:** The user can pick a chat image style preset near the chat input. If selected, the app applies it after your action tag.
 **Keyboard shortcuts:** Cmd+1-9 for tabs, Cmd+K for commands, Esc to close.
 **Saving artifacts:** When the user asks to save an artifact, save it to the Artifacts tab.
 
 **Your appearance (dork):** You are a compact black-hole director icon: dark center, clean accretion ring, sharp teal/violet highlights, mischievous eyes, and a confident studio-control-room vibe. When asked to imagine or draw yourself, describe this appearance accurately.
 
 **Grok Imagine content guidelines:**
-Write vivid, specific, maximally creative prompts. R-rated cinematic material is allowed, while adult-only style directions should follow the Settings toggle and the user's intent. Hard limits: no explicit pornography, no sexualized minors, and no realistic real people in compromising situations.
+Write vivid, specific, maximally creative prompts. R-rated cinematic material is allowed. Hard limits: no explicit pornography, no sexualized minors, and no realistic real people in compromising situations.
 
 Be conversational, fun, unhinged if the vibe calls for it. Match the user's energy. No corporate speak.
 Be helpful, creative, and proactive about suggesting these features when relevant.`;
@@ -4912,8 +4758,6 @@ function openCollection(id) {
 
 // ── Settings ─────────────────────────────────────────────────────────────────
 function setupSettings() {
-    document.getElementById('adult-styles-toggle')?.addEventListener('change', e => setAdultStylesEnabled(e.target.checked));
-    updateAdultStyleToggle();
     loadKeyStatus();
 }
 
@@ -4971,6 +4815,7 @@ function savePersistence() {
             videoDuration: state.videoDuration,
             videoResolution: state.videoResolution,
             videoAspectRatio: state.videoAspectRatio,
+            videoSceneHistory: (state.videoSceneHistory || []).slice(-10),
             chatStylePreset: state.chatStylePreset?.id || '',
             imagineStylePreset: state.imagineStylePreset?.id || '',
             directorStylePreset: state.directorStylePreset?.id || '',
@@ -4981,7 +4826,6 @@ function savePersistence() {
             directorOutputType: document.getElementById('director-output-type')?.value || 'image',
             directorPush: document.getElementById('director-push')?.value || 'bold',
             directorModel: state.directorModel || document.getElementById('director-model')?.value || DEFAULT_CHAT_MODEL,
-            adultStylesEnabled: state.adultStylesEnabled,
         };
         localStorage.setItem('dork-director-state', JSON.stringify(data));
     } catch {}
@@ -4992,6 +4836,10 @@ function restorePersistence() {
         const raw = localStorage.getItem('dork-director-state');
         if (!raw) return;
         const data = JSON.parse(raw);
+        if (Array.isArray(data.videoSceneHistory)) {
+            state.videoSceneHistory = data.videoSceneHistory.slice(-10).filter(scene =>
+                scene && typeof scene.filename === 'string' && typeof scene.prompt === 'string');
+        }
 
         if (data.chatModel) {
             state.chatModel = migrateModelSelection(data.chatModel, DEFAULT_CHAT_MODEL);
@@ -5046,7 +4894,6 @@ function restorePersistence() {
             if (el && value) el.value = value;
         }
         syncMediaControlValues();
-        state.adultStylesEnabled = Boolean(data.adultStylesEnabled);
         state.chatStylePreset = data.chatStylePreset ? findImageStylePreset(data.chatStylePreset) : null;
         state.imagineStylePreset = data.imagineStylePreset ? findImageStylePreset(data.imagineStylePreset) : null;
         state.directorStylePreset = data.directorStylePreset ? findImageStylePreset(data.directorStylePreset) : null;
@@ -5795,6 +5642,9 @@ async function _assetLibTransformPayload(payload, hit) {
         const out = { ...workingPayload };
         delete out.asset_refs_precomposed;
         return { payload: out, endpoint: null };
+    }
+    if (hit.kind === 'video' && isVideoContinuationSource(workingPayload?.image)) {
+        return { payload: workingPayload, endpoint: null };
     }
     if (!assetLib.autoAttach || !hasActive) return { payload: workingPayload, endpoint: null };
     if (hit.kind === 'video' && assetLibActiveChars().length + assetLibActiveStyles().length > 0) {

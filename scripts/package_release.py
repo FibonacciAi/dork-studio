@@ -8,7 +8,7 @@ import re
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 FILES = [
     '.env.example', '.gitignore', 'LICENSE', 'README.md', 'RELEASE_NOTES.md',
     'THIRD_PARTY_NOTICES.md', 'IMPORT_LOCAL_DATA.md', 'requirements.txt',
@@ -16,9 +16,10 @@ FILES = [
     'app/dashboard.py', 'app/templates/index.html',
     'app/static/js/app.js', 'app/static/js/sketch.js', 'app/static/js/media-upgrade.js',
     'app/static/js/direction-pitches.js',
-    'app/static/css/styles.css', 'app/static/css/sketch.css',
+    'app/static/css/styles.css', 'app/static/css/sketch.css', 'app/static/css/premium.css',
     'tests/test_local_boundary.py', 'tests/test_media.py', 'tests/test_sketch.cjs', 'tests/test_media_bridge.cjs',
-    'tests/test_launcher.py', 'tests/test_artifact_preview.cjs', 'tests/test_direction_pitches.cjs',
+    'tests/test_style_controls.cjs', 'tests/test_launcher.py', 'tests/test_artifact_preview.cjs', 'tests/test_direction_pitches.cjs',
+    'tests/test_video_source.cjs', 'tests/test_video_timeline.py',
     'scripts/package_release.py',
     'assets/dork-draw.jpg', 'assets/dork-video.jpg', 'assets/dork-director.jpg', 'assets/dork-directions.jpg',
     *[f'LICENSES/{name}.txt' for name in ['Flask','Werkzeug','Jinja2','MarkupSafe','itsdangerous','click','blinker','python-dotenv','Pillow']],

@@ -44,7 +44,8 @@ window.DorkMedia = {
                 if (revision !== this.estimateRevision) return;
                 let total = estimate.estimate_usd;
                 let preparation = '';
-                if (id === 'video-estimate' && refs > 0) {
+                const continuation = typeof isVideoContinuationSource === 'function' && isVideoContinuationSource(state.videoSource);
+                if (id === 'video-estimate' && refs > 0 && !continuation) {
                     const stillResponse = await fetch('/api/media/estimate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'image', model: state.imagineModel, resolution: state.imagineResolution, quality: document.getElementById('imagine-quality')?.value || 'low', n: 1, input_images: 1, operation: 'edit' }) });
                     const still = await stillResponse.json();
                     if (revision !== this.estimateRevision) return;
