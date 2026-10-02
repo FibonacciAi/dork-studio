@@ -1,6 +1,8 @@
 # dork
 
-A free, open-source creative studio that runs on your desktop. Direct a shot with words or a drawing, keep your Cast and Looks together, and move from a finished image to video.
+The free, open-source **Flask edition of Dork Director**, running locally with a browser interface. Its directing workflow turns a brief or source image, your taste, and selected Cast/Looks into structured still/motion direction, variations and shot-list prompts. Chat can drive media actions, and contextual Live Voice can propose directions for your approval.
+
+**Scope of this release:** v0.1.0 updates the older Flask workspace. It does not include the newer native studio's persistent projects/worlds, take lineage, Stage/Compare/Storyboard workspaces, continuity evaluation or portable production bundles. It is not a complete port of that production studio. Its video continuation uses a frozen frame plus a short in-session narrative; it does not retain a project-level sequence across restarts.
 
 **The app is free. AI generation uses your own paid provider account.** The local editor, drawing pad and saved library work without an API key. Grok renders, chat, prompt inference, speech and cloud Collections require an internet connection and are billed by xAI; optional OpenAI tools use your OpenAI account. No account with dork or Flint is required.
 
@@ -37,6 +39,8 @@ Windows and Linux can use `python -m venv .venv`, install `requirements.txt` wit
 - **Imagine:** current Grok Imagine Image 2.0, explicit Low/Medium quality, 1K/1.5K/2K and up to ten outputs. Low is the default.
 - **Video:** Grok Imagine Video 1.5 Lite (**Fast**) is the default; Video 1.5 (**Quality**) and Classic remain selectable. Fast and Quality support 480p/720p/1080p, 1–15 second requests and image-to-video. Classic is limited to 480p/720p here.
 - **Desktop workflow:** Director, chat, image editing, local galleries, speech controls, code/artifact previews, skills and provider Collections are retained from the original app. Artifact scripts run in an isolated preview that blocks network access.
+
+The original Flask Director/Chat/Live Voice code is retained, but this release changes some workflow details: image-to-Video/Edit attaches directly instead of opening automatic AI pitches; the Video source still offers an explicit Suggest action. Local state is intentionally isolated, so existing media, Cast, history and voice memory are not migrated. External-network-dependent artifacts cannot run inside the restricted preview.
 
 For sketch-directed video, first render a finished still in Imagine, then use its **Video** button. A sketch guides layout rather than becoming the literal opening frame. Both renders are billed separately. Video with active Cast/Looks also prepares a paid finished still before animating; the Video estimate includes both steps. Last-frame continuation starts a new paid image-to-video request; this app does not implement the provider's video editing or extension APIs.
 
