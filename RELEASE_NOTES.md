@@ -1,3 +1,9 @@
+# v0.1.2 — current screenshots and contributor attribution
+
+Refreshed the screenshots from the current actual app: Director with a locally written example, an original drawing, explicit pitch entry before any AI request, and current video controls. Empty keys and separate temporary state were used; no provider call, simulated AI result or private media/history is shown.
+
+The app-owned MIT copyright now uses **dork contributors**. Required upstream license attributions are retained. Repository owner/account links and older public commits/releases remain visible; this forward update does not anonymize the account or erase historical attribution. App behavior and the v0.1.1 validation remain unchanged. Verification documentation now correctly identifies the existing test runtime as Python 3.9.6; the setup guide targets Python 3.10+, and a fresh setup was not exercised.
+
 # v0.1.1 — explicit creative pitches and desktop launch
 
 This follow-up restores a visible three-direction pitch entry in the existing Flask Director workflow. **Suggest directions** carries the selected source, brief, taste, Cast/Looks and recent scenes; its AI request is explicitly provider-billed. Opening the card, attaching a source or choosing an editable direction starts no render.

@@ -2,11 +2,17 @@
 
 The free, open-source **Flask edition of Dork Director**, running locally with a browser interface. Its directing workflow turns a brief or source image, your taste, and selected Cast/Looks into structured still/motion direction, variations and shot-list prompts. Chat can drive media actions, and contextual Live Voice can propose directions for your approval.
 
-**Scope of this release:** v0.1.1 updates the older Flask workspace. It does not include the newer native studio's persistent projects/worlds, take lineage, Stage/Compare/Storyboard workspaces, continuity evaluation or portable production bundles. Its video continuation uses a frozen frame plus a short in-session narrative; it does not retain a project-level sequence across restarts.
+**Scope of this release:** v0.1.2 updates the older Flask workspace. It does not include the newer native studio's persistent projects/worlds, take lineage, Stage/Compare/Storyboard workspaces, continuity evaluation or portable production bundles. Its video continuation uses a frozen frame plus a short in-session narrative; it does not retain a project-level sequence across restarts.
 
 **The app is free. AI generation uses your own paid provider account.** The local editor, drawing pad and saved library work without an API key. Grok renders, chat, prompt inference, speech and cloud Collections require an internet connection and are billed by xAI; optional OpenAI tools use your OpenAI account. No account with dork or Flint is required.
 
-![Draw to direct](assets/dork-draw.jpg)
+![Director with a locally written example brief, editable direction and an original drawing source](assets/dork-director.jpg)
+
+![Draw to direct with an original robot-and-tram composition guide](assets/dork-draw.jpg)
+
+![Explicit creative pitch entry before any AI request](assets/dork-directions.jpg)
+
+These are direct screenshots of the current app using empty keys, temporary state and nonpersonal example content. The brief/direction was written locally; no provider-generated result or simulated AI output is pictured.
 
 ## Start on macOS
 
@@ -59,7 +65,7 @@ Optional `ffmpeg` and `ffprobe` must be available on PATH for last-frame extract
 
 ## Verification
 
-Tested on macOS with an Apple M3 Max, Python 3.13 and the pinned dependencies. Thirty-seven Python tests cover local privacy boundaries, mocked provider payloads/costs/job states and launcher behavior. Twenty Node tests cover drawing, media handoff, explicit three-direction pitches and artifact preview isolation. A real local browser walkthrough with empty keys, temporary state and a synthetic provider checked sketch → Director source → three pitches → editable direction, without a media submission. The drawing component passed fifteen browser assertions, and artifact rendering/isolation passed nineteen. Loopback binding and collision fallback were checked with real local sockets; Chrome/Edge invocation is covered by mocked command checks.
+Tested on macOS with an Apple M3 Max and the pinned dependencies in an existing Python 3.9.6 environment. The setup guide targets Python 3.10+; a fresh installation of that environment was not exercised. Thirty-seven Python tests cover local privacy boundaries, mocked provider payloads/costs/job states and launcher behavior. Twenty Node tests cover drawing, media handoff, explicit three-direction pitches and artifact preview isolation. A real local browser walkthrough with empty keys, temporary state and a synthetic provider checked sketch → Director source → three pitches → editable direction, without a media submission. The drawing component passed fifteen browser assertions, and artifact rendering/isolation passed nineteen. Loopback binding and collision fallback were checked with real local sockets; Chrome/Edge invocation is covered by mocked command checks.
 
 **No paid provider render was made for this release.** Render quality, current account-specific access, live voice/Collections behavior and cross-platform launch remain unverified. The M3 Max runs the UI and local media tools; xAI performs the generative inference in the cloud. No local model or GPU benchmark is claimed.
 
