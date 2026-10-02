@@ -1,0 +1,46 @@
+/* Scoped styles: the pad has no effect on the host studio layout. */
+.dork-sketch {
+    width: min(940px, 96vw); max-height: 94dvh; padding: 20px;
+    margin: auto; overflow: auto; border: 1px solid var(--border-active, #2dd4bf55);
+    border-radius: 20px; color: var(--text, #f0f2f8); background: var(--bg-base, #0b0f14);
+    font-family: var(--font, system-ui); box-shadow: 0 24px 100px #0009;
+}
+.dork-sketch::backdrop { background: #02050bd9; backdrop-filter: blur(5px); }
+.dork-sketch-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.dork-sketch-header h2 { font-size: 22px; font-weight: 700; line-height: 1.2; }
+.dork-sketch-header p { margin-top: 6px; color: var(--text-muted, #9ca4c4); font-size: 13px; }
+.dork-sketch button {
+    border: 1px solid var(--border, #7dd3fc30); border-radius: 10px; padding: 9px 12px;
+    font: inherit; font-size: 13px; font-weight: 600; line-height: 1.2;
+    color: var(--text, #f0f2f8); background: var(--bg-card, #14202a); cursor: pointer;
+}
+.dork-sketch button:hover:not(:disabled) { border-color: var(--accent, #2dd4bf); }
+.dork-sketch button:focus-visible, .dork-sketch input:focus-visible { outline: 2px solid var(--accent-bright, #7dd3fc); outline-offset: 3px; }
+.dork-sketch button:disabled { opacity: .4; cursor: default; }
+.dork-sketch button[aria-pressed="true"] { background: var(--accent, #2dd4bf); color: #050609; border-color: var(--accent, #2dd4bf); }
+.dork-sketch-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 18px 0 14px; }
+.dork-sketch-tool-group { display: flex; gap: 4px; }
+.dork-sketch-colors { display: flex; gap: 7px; align-items: center; }
+.dork-sketch .dork-sketch-colors button {
+    width: 27px; height: 27px; padding: 0; border-radius: 50%; border: 2px solid #ffffff40;
+    background: var(--sketch-color); box-shadow: 0 0 0 2px transparent;
+}
+.dork-sketch .dork-sketch-colors button[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px var(--accent, #2dd4bf); }
+.dork-sketch-width { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-muted, #9ca4c4); }
+.dork-sketch-width input { width: 95px; accent-color: var(--accent, #2dd4bf); }
+.dork-sketch-width output { min-width: 20px; text-align: right; font-variant-numeric: tabular-nums; }
+.dork-sketch-paper { width: min(100%, calc(60dvh * var(--sketch-ratio, 1.7778))); margin-inline: auto; border: 1px solid #2dd4bf60; border-radius: 16px; overflow: hidden; background: #f6f6f6; }
+.dork-sketch-paper canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+.dork-sketch-paper canvas[data-tool="eraser"] { cursor: cell; }
+.dork-sketch-status { min-height: 20px; margin-top: 8px; font-size: 13px; color: var(--red, #f87171); }
+.dork-sketch-footer { display: flex; gap: 16px; align-items: center; justify-content: space-between; }
+.dork-sketch-footer p { max-width: 590px; font-size: 12px; line-height: 1.5; color: var(--text-muted, #9ca4c4); }
+.dork-sketch button.dork-sketch-apply { flex-shrink: 0; background: var(--accent, #2dd4bf); border-color: var(--accent, #2dd4bf); color: #050609; padding: 12px 18px; }
+@media (max-width: 600px) {
+    .dork-sketch { padding: 14px; width: 98vw; max-height: 96dvh; border-radius: 14px; }
+    .dork-sketch-tools { gap: 8px; }
+    .dork-sketch-colors { order: 2; }
+    .dork-sketch-header h2 { font-size: 20px; }
+    .dork-sketch-footer { align-items: stretch; flex-direction: column; gap: 8px; }
+    .dork-sketch .dork-sketch-tool-group button { min-height: 40px; }
+}
