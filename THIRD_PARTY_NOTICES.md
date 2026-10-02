@@ -1,10 +1,8 @@
 # Third-party notices
 
-The dork application code is released under the MIT License in `LICENSE`, by the owner who authorized publication of this recovered app. The drawing controls are a JavaScript implementation of the owner's native drawing workflow; no native app binaries, service credentials or private assets are included.
+The dork application source is MIT licensed. Setup installs the runtime dependencies below. Their full license notices are retained in `LICENSES/`.
 
-Runtime dependencies are downloaded from PyPI when the user explicitly runs Setup. Their licenses do not change the dork source license. Full installed license notices are retained in `LICENSES/`; no dependency binaries or wheels are bundled.
-
-| Dependency | Tested version | License | Upstream |
+| Dependency | Pinned version | License | Upstream |
 |---|---:|---|---|
 | Flask | 3.1.3 | BSD-3-Clause | https://github.com/pallets/flask |
 | Werkzeug | 3.1.8 | BSD-3-Clause | https://github.com/pallets/werkzeug |
@@ -16,7 +14,7 @@ Runtime dependencies are downloaded from PyPI when the user explicitly runs Setu
 | python-dotenv | 1.2.1 | BSD-3-Clause | https://github.com/theskumar/python-dotenv |
 | Pillow | 11.3.0 | MIT-CMU | https://github.com/python-pillow/Pillow |
 
-Pillow's installed distribution may incorporate additional libraries; its upstream distribution notices remain applicable. The release imports Pillow and does not redistribute its binaries. Python and Node are external runtimes, not included in the release. Node is needed only for drawing tests.
+Pillow's installed distribution may incorporate additional libraries; its upstream distribution notices remain applicable. The release imports Pillow and does not redistribute its binaries. Python and Node are external runtimes, not included in the release. Node is needed only for JavaScript tests.
 
 FFmpeg/ffprobe are optional external tools. Their particular build can be LGPL or GPL depending on enabled components; obtain them from a source that supplies its corresponding licenses. No FFmpeg executable is included here. See https://ffmpeg.org/legal.html.
 
