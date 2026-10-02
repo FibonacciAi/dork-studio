@@ -2510,22 +2510,121 @@ def asset_lib_serve(item_id):
     return send_from_directory(str(ASSET_LIB_DIR), item["file"])
 
 
-# ── Main ─────────────────────────────────────────────────────────────────────
+# ── Desktop launcher ──────────────────────────────────────────────────────
 
-if __name__ == "__main__":
-    import argparse
-    import threading
-    import webbrowser
+class DorkPortCollision(OSError):
+    """An EADDRINUSE raised specifically by the preferred socket bind."""
+
+
+def preferred_dork_port(username=None):
+    """Keep each user's studio origin stable, outside the older app port range."""
+    import getpass
+    import hashlib
+    user = getpass.getuser() if username is None else username
+    return 5357 + int(hashlib.md5(user.encode("utf-8")).hexdigest(), 16) % 100
+
+
+def create_local_server(port, *, fallback_port=False):
+    """Reserve loopback once; an alternate port is allowed only after EADDRINUSE.
+
+    Werkzeug normally converts bind errors to SystemExit, losing their errno.
+    Reserving the listener here keeps permission errors distinguishable and
+    passes the same socket to the server without a check-then-bind race.
+    """
+    import errno
+    import socket
     from werkzeug.serving import make_server
+
+    def reserve(selected):
+        listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            listener.bind(("127.0.0.1", selected))
+        except OSError as error:
+            listener.close()
+            if error.errno == errno.EADDRINUSE:
+                raise DorkPortCollision(error.errno, error.strerror) from error
+            raise
+        except BaseException:
+            listener.close()
+            raise
+        return listener
+
+    try:
+        listener = reserve(port)
+    except DorkPortCollision:
+        if not fallback_port or port == 0:
+            raise
+        # One collision fallback. No process is killed and permission errors
+        # never cause a second attempt on another port.
+        listener = reserve(0)
+    try:
+        listener.listen(socket.SOMAXCONN)
+        selected_port = listener.getsockname()[1]
+        return make_server("127.0.0.1", selected_port, app, threaded=True, fd=listener.fileno())
+    finally:
+        # Werkzeug duplicates the descriptor; its server owns that duplicate.
+        listener.close()
+
+
+def open_desktop_studio(url):
+    """Open Chrome/Edge app mode on macOS, otherwise use the default browser."""
+    import sys
+    import webbrowser
+    parsed = urllib.parse.urlsplit(url)
+    if parsed.scheme != "http" or parsed.hostname != "127.0.0.1" or parsed.username or parsed.password:
+        raise ValueError("Desktop studio URL must use local loopback")
+    if sys.platform == "darwin":
+        for bundle in ("Google Chrome.app", "Microsoft Edge.app"):
+            for applications in (Path("/Applications"), Path.home() / "Applications"):
+                browser = applications / bundle
+                if not browser.is_dir():
+                    continue
+                command = ["open", "-na", str(browser), "--args", f"--app={url}", "--window-size=1500,930"]
+                try:
+                    result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+                    if result.returncode == 0:
+                        return True
+                except PermissionError:
+                    return False
+                except OSError:
+                    pass
+    return bool(webbrowser.open(url, new=1))
+
+
+def run_local_studio(argv=None):
+    import argparse
+    import errno
+    import sys
+    import threading
     parser = argparse.ArgumentParser(description="Run the local dork studio")
-    parser.add_argument("--port", type=int, default=0, help="0 selects a free local port")
-    parser.add_argument("--open", action="store_true", help="Open the studio in your browser")
-    options = parser.parse_args()
-    if not 0 <= options.port <= 65535:
+    parser.add_argument("--port", type=int, default=None, help="Preferred per-user port by default; 0 selects a free local port")
+    parser.add_argument("--fallback-port", action="store_true", help="Use a free local port only if the requested port is already occupied")
+    parser.add_argument("--open", action="store_true", help="Open the studio as a desktop browser app")
+    options = parser.parse_args(argv)
+    selected_port = preferred_dork_port() if options.port is None else options.port
+    if not 0 <= selected_port <= 65535:
         parser.error("port must be between 0 and 65535")
-    with make_server("127.0.0.1", options.port, app, threaded=True) as server:
-        url = f"http://127.0.0.1:{server.server_port}"
+    try:
+        server = create_local_server(selected_port, fallback_port=options.fallback_port)
+    except OSError as error:
+        if error.errno == errno.EADDRINUSE:
+            print(f"dork: local port {selected_port} is occupied. Use --fallback-port or an explicit --port. Existing processes were left running.", file=sys.stderr)
+        else:
+            print(f"dork: could not bind 127.0.0.1:{selected_port}: {error.strerror or str(error)}. Launch stopped.", file=sys.stderr)
+        return 1
+    with server:
+        url = f"http://127.0.0.1:{server.port}"
         print(f"dork: {url}", flush=True)
         if options.open:
-            threading.Timer(0.4, lambda: webbrowser.open(url)).start()
-        server.serve_forever()
+            timer = threading.Timer(0.4, open_desktop_studio, args=(url,))
+            timer.daemon = True
+            timer.start()
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            pass
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(run_local_studio())

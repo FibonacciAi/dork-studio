@@ -916,10 +916,10 @@ function setupDirector() {
         sourceDrop.addEventListener('drop', e => {
             e.preventDefault();
             sourceDrop.classList.remove('dragover');
-            if (e.dataTransfer.files.length) handleDirectorSourceFile(e.dataTransfer.files[0], true);
+            if (e.dataTransfer.files.length) handleDirectorSourceFile(e.dataTransfer.files[0], false);
         });
         sourceInput.addEventListener('change', e => {
-            if (e.target.files.length) handleDirectorSourceFile(e.target.files[0], true);
+            if (e.target.files.length) handleDirectorSourceFile(e.target.files[0], false);
         });
     }
     document.getElementById('director-vision')?.addEventListener('keydown', e => {
@@ -1016,6 +1016,7 @@ function applyDirectorSourceToImagine(showToast = true) {
         preview.innerHTML = `<div class="source-preview"><img src="${escapeAttr(state.directorSourceImage.dataUrl)}"><button class="clear-btn" onclick="clearImagineSource()">&times;</button></div>`;
     }
     if (showToast) toast('Source sent to Imagine', 'success');
+    window.DorkMedia?.refreshEstimates();
     return true;
 }
 
@@ -2119,163 +2120,37 @@ async function crossTabEditImage(url) {
     } catch (error) { toast(error.message || 'Could not attach image', 'error'); }
 }
 
-function loadImageAsVideoSource(url, dataUrl) {
-    if (dataUrl) {
-        state.videoSource = dataUrl.split(',')[1];
-        document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${dataUrl}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Get AI prompt suggestions">Suggest</button></div>`;
-        return Promise.resolve();
-    } else {
-        state.videoSourceLoading = true;
-        return fetch(url).then(r => r.blob()).then(blob => {
-            return new Promise(resolve => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    state.videoSource = e.target.result.split(',')[1];
-                    state.videoSourceLoading = false;
-                    document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${e.target.result}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Get AI prompt suggestions">Suggest</button></div>`;
-                    resolve();
-                };
-                reader.readAsDataURL(blob);
-            });
-        });
-    }
-}
-
-function loadImageAsEditSource(url, dataUrl) {
-    if (dataUrl) {
-        state.imagineSource = dataUrl.split(',')[1];
-        state.imagineSourceUrl = dataUrl;
-        document.getElementById('imagine-source-preview').innerHTML = `<div class="source-preview"><img src="${dataUrl}"><button class="clear-btn" onclick="clearImagineSource()">&times;</button></div>`;
-    } else {
-        fetch(url).then(r => r.blob()).then(blob => {
-            const reader = new FileReader();
-            reader.onload = e => {
-                state.imagineSource = e.target.result.split(',')[1];
-                state.imagineSourceUrl = e.target.result;
-                document.getElementById('imagine-source-preview').innerHTML = `<div class="source-preview"><img src="${e.target.result}"><button class="clear-btn" onclick="clearImagineSource()">&times;</button></div>`;
-            };
-            reader.readAsDataURL(blob);
-        });
-    }
-}
-
-async function showPromptSuggestions(imageUrl, mode) {
-    // Determine suggestion provider: ChatGPT if gpt model selected in imagine, else Grok
-    const imagineModelSel = document.getElementById('imagine-model');
-    const defaultProvider = (imagineModelSel && imagineModelSel.value.startsWith('gpt-')) ? 'chatgpt' : 'grok';
-
-    // Show overlay with loading state
-    const overlay = document.createElement('div');
-    overlay.className = 'prompt-suggest-overlay';
-    overlay.innerHTML = `
-        <div class="prompt-suggest-card">
-            <img src="${imageUrl}" class="suggest-img">
-            <h3>${mode === 'edit' ? 'Edit Image' : 'Create Video'}</h3>
-            <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:8px">
-                <label style="font-size:11px;color:var(--text-muted)">Suggestions by:</label>
-                <select id="suggest-provider" style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--bg-elevated);color:var(--text);border:1px solid var(--border)">
-                    <option value="grok" ${defaultProvider === 'grok' ? 'selected' : ''}>Grok</option>
-                    <option value="chatgpt" ${defaultProvider === 'chatgpt' ? 'selected' : ''}>ChatGPT</option>
-                </select>
-            </div>
-            <div id="suggest-loading" style="text-align:center;padding:16px">
-                <div class="typing-indicator" style="display:inline-flex"><span></span><span></span><span></span></div>
-                <p style="color:var(--text-dim);font-size:12px;margin-top:8px">Generating prompt suggestions...</p>
-            </div>
-            <div id="suggest-options"></div>
-            <div class="prompt-suggest-actions">
-                <button class="btn btn-ghost" onclick="this.closest('.prompt-suggest-overlay').remove()">Cancel</button>
-                <button class="btn btn-primary" id="suggest-custom-btn">Custom Prompt</button>
-            </div>
-        </div>`;
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-
-    document.getElementById('suggest-custom-btn').addEventListener('click', () => {
-        overlay.remove();
-        if (mode === 'edit') {
-            loadImageAsEditSource(imageUrl);
-            switchPanel('imagine');
-            document.getElementById('imagine-prompt').focus();
-        } else {
-            loadImageAsVideoSource(imageUrl);
-            switchPanel('video');
-            document.getElementById('video-prompt').focus();
-        }
-    });
-
-    // Ask AI for prompt suggestions based on the image
+async function loadImageAsVideoSource(url, dataUrl) {
+    state.videoSourceLoading = true;
     try {
-        const imgDataUrl = imageUrl.startsWith('data:') ? imageUrl : await fetchAsDataUrl(imageUrl);
-        const sysPrompt = mode === 'edit'
-            ? 'You are a creative image editor. Given an image, suggest 3 different creative edits. Return ONLY a JSON array of 3 strings, each being a short image edit prompt (under 80 chars). Be creative and varied — one subtle, one dramatic, one artistic. No explanation, just the JSON array.'
-            : 'You are a creative video director. Given an image, suggest 3 different ways to animate it as a video. Return ONLY a JSON array of 3 strings, each being a short video prompt (under 80 chars). Be creative — one cinematic, one dynamic, one atmospheric. No explanation, just the JSON array.';
+        const prepared = dataUrl || await fetchAsDataUrl(url);
+        state.videoSource = prepared.split(',')[1];
+        state.videoSourceOrigin = { url, raw: state.videoSource };
+        state.videoSourceUrl = prepared;
+        document.getElementById('video-source-preview').innerHTML = `<div class="source-preview"><img src="${escapeAttr(prepared)}"><button class="clear-btn" onclick="clearVideoSource()">&times;</button><button class="suggest-btn" onclick="suggestVideoPrompts()" title="Paid AI next-scene suggestions">Suggest</button></div>`;
+    } finally { state.videoSourceLoading = false; }
+}
 
-        const suggestProvider = document.getElementById('suggest-provider')?.value || 'grok';
-        const suggestEndpoint = suggestProvider === 'chatgpt' ? '/api/chat/sync-openai' : '/api/chat/sync';
-        const suggestPayload = suggestProvider === 'chatgpt'
-            ? {
-                messages: [{ role: 'user', content: mode === 'edit'
-                    ? 'Suggest 3 creative edits for an image. Be creative and varied — one subtle, one dramatic, one artistic. Return ONLY a JSON array of 3 strings, each under 80 chars.'
-                    : 'Suggest 3 creative video animations for an image. Be creative — one cinematic, one dynamic, one atmospheric. Return ONLY a JSON array of 3 strings, each under 80 chars.' }],
-                system: sysPrompt
-              }
-            : {
-                model: DEFAULT_CHAT_MODEL,
-                messages: [{ role: 'user', content: [
-                    { type: 'text', text: mode === 'edit' ? 'Suggest 3 creative edits for this image.' : 'Suggest 3 creative video animations for this image.' },
-                    { type: 'image_url', image_url: { url: imgDataUrl } }
-                ]}],
-                system: sysPrompt
-              };
+async function loadImageAsEditSource(url, dataUrl) {
+    const prepared = dataUrl || await fetchAsDataUrl(url);
+    state.imagineSource = prepared.split(',')[1];
+    state.imagineSourceOrigin = { url, raw: state.imagineSource };
+    state.imagineSourceUrl = prepared;
+    document.getElementById('imagine-source-preview').innerHTML = `<div class="source-preview"><img src="${escapeAttr(prepared)}"><button class="clear-btn" onclick="clearImagineSource()">&times;</button></div>`;
+}
 
-        const resp = await fetch(suggestEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(suggestPayload)
-        });
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-
-        let suggestions;
-        try {
-            const cleaned = data.content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
-            suggestions = JSON.parse(cleaned);
-        } catch { suggestions = [data.content]; }
-
-        const optionsEl = document.getElementById('suggest-options');
-        const loadingEl = document.getElementById('suggest-loading');
-        if (loadingEl) loadingEl.remove();
-
-        if (optionsEl) {
-            optionsEl.innerHTML = suggestions.map(s => `<button class="prompt-suggest-option">${escapeHtml(s)}</button>`).join('');
-            optionsEl.querySelectorAll('.prompt-suggest-option').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    overlay.remove();
-                    if (mode === 'edit') {
-                        loadImageAsEditSource(imageUrl);
-                        switchPanel('imagine');
-                        document.getElementById('imagine-prompt').value = btn.textContent;
-                    } else {
-                        loadImageAsVideoSource(imageUrl);
-                        switchPanel('video');
-                        document.getElementById('video-prompt').value = btn.textContent;
-                    }
-                });
-            });
-        }
-    } catch (err) {
-        const loadingEl = document.getElementById('suggest-loading');
-        if (loadingEl) loadingEl.innerHTML = `<p style="color:var(--text-dim);font-size:12px">Couldn't generate suggestions. Use custom prompt.</p>`;
-    }
+function showPromptSuggestions(imageUrl, mode) {
+    return DorkPitches.open(imageUrl, mode);
 }
 
 async function fetchAsDataUrl(url) {
     const resp = await fetch(url);
+    if (!resp.ok) throw new Error('Could not load the selected image.');
     const blob = await resp.blob();
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Could not read the selected image.'));
         reader.readAsDataURL(blob);
     });
 }

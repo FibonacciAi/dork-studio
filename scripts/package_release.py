@@ -8,14 +8,17 @@ import re
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
+VERSION = '0.1.1'
 FILES = [
     '.env.example', '.gitignore', 'LICENSE', 'README.md', 'RELEASE_NOTES.md',
-    'THIRD_PARTY_NOTICES.md', 'requirements.txt',
+    'THIRD_PARTY_NOTICES.md', 'IMPORT_LOCAL_DATA.md', 'requirements.txt',
     'Launch dork.command', 'Setup dork.command',
     'app/dashboard.py', 'app/templates/index.html',
     'app/static/js/app.js', 'app/static/js/sketch.js', 'app/static/js/media-upgrade.js',
+    'app/static/js/direction-pitches.js',
     'app/static/css/styles.css', 'app/static/css/sketch.css',
     'tests/test_local_boundary.py', 'tests/test_media.py', 'tests/test_sketch.cjs', 'tests/test_media_bridge.cjs',
+    'tests/test_launcher.py', 'tests/test_artifact_preview.cjs', 'tests/test_direction_pitches.cjs',
     'scripts/package_release.py',
     'assets/dork-draw.jpg', 'assets/dork-video.jpg', 'assets/dork-director.jpg',
     *[f'LICENSES/{name}.txt' for name in ['Flask','Werkzeug','Jinja2','MarkupSafe','itsdangerous','click','blinker','python-dotenv','Pillow']],
@@ -44,12 +47,12 @@ def reviewed_files():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT.parent / 'outputs')
+    parser.add_argument('--output', type=Path, default=ROOT.parent / 'outputs' / VERSION)
     args = parser.parse_args()
     manifest = reviewed_files()
     args.output.mkdir(parents=True, exist_ok=True)
-    bundle = args.output / 'dork-0.1.0-source.zip'
-    manifest_bytes = (json.dumps({'product': 'dork', 'version': '0.1.0', 'scope': 'audited source and desktop launchers', 'files': manifest}, indent=2) + '\n').encode()
+    bundle = args.output / f'dork-{VERSION}-source.zip'
+    manifest_bytes = (json.dumps({'product': 'dork', 'version': VERSION, 'scope': 'audited Flask source and desktop launchers', 'files': manifest}, indent=2) + '\n').encode()
     with zipfile.ZipFile(bundle, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for row in manifest:
             info = zipfile.ZipInfo('dork/' + row['path'], date_time=(2026,10,2,0,0,0))
@@ -63,7 +66,7 @@ def main():
         archive.writestr(info, manifest_bytes)
     digest = hashlib.sha256(bundle.read_bytes()).hexdigest()
     (args.output / 'release-manifest.json').write_bytes(manifest_bytes)
-    (args.output / 'dork-0.1.0-source.zip.sha256').write_text(f'{digest}  {bundle.name}\n')
+    (args.output / f'{bundle.name}.sha256').write_text(f'{digest}  {bundle.name}\n')
     print(f'Audited {len(manifest)} public files; no detected tokens, private keys, or private host paths.')
     print(f'{bundle.name}: {bundle.stat().st_size} bytes; SHA-256 {digest}')
 
